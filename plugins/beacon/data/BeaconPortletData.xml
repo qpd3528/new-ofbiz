@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <PortalPortlet portalPortletId="BEACON_1" portletName="Beacon 1" description="Beacon portlet n. 1"
+        screenName="BeaconPortlet1" screenLocation="component://beacon/widget/beacon/PortletScreens.xml"
+        editFormName="BeaconPortlet1Edit" editFormLocation="component://beacon/widget/beacon/PortletEditForms.xml"
+        screenshot="/images/ofbiz_logo.png"/>
+
+    <PortalPortlet portalPortletId="BEACON_2" portletName="Beacon 2" description="Beacon portlet n. 2"
+        screenName="BeaconPortlet2" screenLocation="component://beacon/widget/beacon/PortletScreens.xml"
+        editFormName="BeaconPortlet2Edit" editFormLocation="component://beacon/widget/beacon/PortletEditForms.xml"
+        screenshot="/images/opentravelsystem_logo.jpg"/>
+
+    <PortalPortlet portalPortletId="BEACON_3" portletName="Beacon 3" description="Beacon portlet n. 3"
+        screenName="BeaconPortlet3" screenLocation="component://beacon/widget/beacon/PortletScreens.xml"
+        editFormName="BeaconPortlet3Edit" editFormLocation="component://beacon/widget/beacon/PortletEditForms.xml"/>
+
+    <PortletCategory portletCategoryId="BEACON" description="Beacon Portlet(s)"/>
+    <PortletPortletCategory portalPortletId="BEACON_1" portletCategoryId="BEACON"/>
+    <PortletPortletCategory portalPortletId="BEACON_2" portletCategoryId="BEACON"/>
+    <PortletPortletCategory portalPortletId="BEACON_3" portletCategoryId="BEACON"/>
+</entity-engine-xml>

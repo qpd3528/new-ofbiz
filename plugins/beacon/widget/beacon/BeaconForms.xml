@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <form name="FindBeacons" type="single" target="FindBeacon" default-entity-name="Beacon">
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done --></field>
+        <field name="beaconId" title="${uiLabelMap.BeaconBeaconId}"><text-find/></field>
+        <field name="majorId" title="${uiLabelMap.majorId}"><text-find/></field>
+        <field name="beaconTypeId" title="${uiLabelMap.CommonType}">
+            <check>
+                <entity-options key-field-name="beaconTypeId" entity-name="BeaconType">
+                    <entity-order-by field-name="beaconTypeId"/>
+                </entity-options>
+            </check>
+        </field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}">
+            <check>
+                <entity-options key-field-name="statusId" entity-name="BeaconStatusItem">
+                    <entity-order-by field-name="statusId"/>
+                </entity-options>
+            </check>
+        </field>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}">
+            <lookup target-form-name="LookupBusinessName"/>
+        </field>
+
+        <field name="searchButton"><submit/></field>
+        <field name="exportButton" position="2" widget-style="smallSubmit" title=" ">
+            <hyperlink also-hidden="false" target-type="plain" description="${uiLabelMap.CommonExport}"
+                       target="javascript: document.FindBeacons.action='ListBeaconExport'; document.FindBeacons.submit();"/>
+        </field>
+    </form>
+
+    <grid name="ListBeacons" list-name="listIt" paginate-target="FindBeacon" default-entity-name="Beacon" separate-columns="true"
+        odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+        <actions>
+            <service service-name="performFind" result-map="result" result-map-list="listIt">
+                <field-map field-name="inputFields" from-field="beaconCtx"/>
+                <field-map field-name="entityName" value="Beacon"/>
+                <field-map field-name="orderBy" from-field="parameters.sortField"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
+            <set field="sortField" from-field="parameters.sortField"/>
+        </actions>
+        <alt-row-style use-when="'EXST_APPROVED'.equals(statusId)" style="Validate"/>
+        <alt-row-style use-when="'EXST_CANCELLED'.equals(statusId)" style="Warn"/>
+        <field name="beaconId" title="${uiLabelMap.BeaconBeaconId}" widget-style="buttontext">
+            <hyperlink description="${beaconId}" target="EditBeacon" also-hidden="false">
+                <parameter param-name="beaconId"/>
+            </hyperlink>
+        </field>
+        <field name="beaconTypeId" title="${uiLabelMap.CommonType}"><display-entity entity-name="BeaconType"/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}"><display-entity entity-name="StatusItem"/></field>
+        <field name="majorId" title="${uiLabelMap.MajorId}"><display/></field>
+        <field name="minorId" title="${uiLabelMap.MinorId}"><display/></field>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}" sort-field="true"><display/></field>
+
+    </grid>
+
+    <!--beacon form with include another form -->
+    <grid name="ListBeaconsWithFeatures" extends="ListBeacons" extends-resource="component://beacon/widget/beacon/BeaconForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>ㄷ
+        <field name="features"><include-form name="BeaconFeaturesInLine" location="component://beacon/widget/beacon/BeaconForms.xml"/></field>
+    </grid>
+    <form name="BeaconFeaturesInLine" type="list" default-table-style="basic-table light-grid" default-entity-name="BeaconFeatureAppl">
+        <actions>
+            <entity-condition entity-name="BeaconFeatureAppl">
+                <condition-expr field-name="beaconId" from-field="beaconId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BeaconFeatureAppl" default-field-type="display"/>
+        <field name="beaconId"><ignored/></field>
+    </form>
+
+    <!--beacon form with include a screen -->
+    <grid name="ListBeaconsWithItems" extends="ListBeacons" extends-resource="component://beacon/widget/beacon/BeaconForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="items"><include-screen name="BeaconItemsInLine" location="component://beacon/widget/beacon/BeaconScreens.xml"/></field>
+    </grid>
+
+    <grid name="ListBeaconItemsInLine" default-table-style="basic-table light-grid">
+        <actions>
+            <entity-condition entity-name="BeaconItem">
+                <condition-expr field-name="beaconId" from-field="beaconId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BeaconItem" default-field-type="display"/>
+        <field name="beaconId"><ignored/></field>
+    </grid>
+
+    <!--beacon form with include a grid -->
+    <grid name="ListBeaconsWithStatus" extends="ListBeacons" extends-resource="component://beacon/widget/beacon/BeaconForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="status"><include-grid name="BeaconStatusInLine" location="component://beacon/widget/beacon/BeaconForms.xml"/></field>
+    </grid>
+
+    <grid name="BeaconStatusInLine" default-table-style="basic-table light-grid" default-entity-name="BeaconStatus">
+        <actions>
+            <entity-condition entity-name="BeaconStatus">
+                <condition-expr field-name="beaconId" from-field="beaconId"/>
+                <order-by field-name="statusDate"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BeaconStatus" default-field-type="display"/>
+        <field name="beaconId"><ignored/></field>
+    </grid>
+
+    <grid name="ListBeaconExport" extends="ListBeacons" extends-resource="component://beacon/widget/beacon/BeaconForms.xml" paginate="false">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+    </grid>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (ListBeacons) would
+        have these attributes.
+         For the Ajax beacon we want all beacon entities listed, so the we use the entity-condition
+         instead of the performFind service. -->
+    <grid name="ListBeaconsAjax" extends="ListBeacons" paginate-target="authview/findBeaconAjax">
+        <actions>
+            <entity-condition entity-name="Beacon"><order-by field-name="beaconName"/></entity-condition>
+        </actions>
+        <field name="beaconId" title="${uiLabelMap.BeaconBeaconId}" widget-style="buttontext">
+            <hyperlink description="${beaconId}" target="EditBeaconLayer" also-hidden="false" link-type="layered-modal">
+                <parameter param-name="beaconId"/>
+            </hyperlink>
+        </field>
+        <field name="beaconName" title="${uiLabelMap.CommonName}" id-name="beaconName">
+            <display>
+                <in-place-editor url="/beacon/control/updateBeacon" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="beaconId" from-field="beaconId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+
+        <field name="description" title="${uiLabelMap.CommonDescription}" id-name="description">
+            <display>
+                <in-place-editor url="/beacon/control/updateBeacon" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="beaconId" from-field="beaconId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+        <on-event-update-area event-type="paginate" area-id="ListBeaconsAjax" area-target="ListBeaconFormOnly"/>
+    </grid>
+
+    <form name="EditBeacon" type="single" target="updateBeacon" title="" default-map-name="beacon" default-entity-name="Beacon">
+        <actions>
+            <entity-one entity-name="StatusItem" value-field="currentStatus" auto-field-map="false">
+                <field-map field-name="statusId" from-field="beacon.statusId"/>
+            </entity-one>
+            <set field="anotherText" from-field="beacon.anotherText"/>
+        </actions>
+        <alt-target use-when="beacon==null" target="createBeacon"/>
+        <auto-fields-service service-name="updateBeacon"/>
+        <field use-when="beacon!=null" name="beaconId" title="${uiLabelMap.BeaconBeaconId}"><display/></field>
+        <field use-when="beacon==null @and beaconId==null" name="beaconId" title="${uiLabelMap.BeaconBeaconId}"><ignored/></field>
+        <field use-when="beacon==null @and beaconId!=null" name="beaconId" title="${uiLabelMap.BeaconBeaconId}"><display description="${uiLabelMap.CommonCannotBeFound}: [${beaconId}]" also-hidden="false"/></field>
+        <field name="beaconTypeId" title="${uiLabelMap.CommonType}" id-name="beaconTypeId" required-field="true">
+            <drop-down allow-empty="false">
+                <!-- this is a neat feature, but not good for the type because the user would have to know the possible types in order to enter at least the first letter, so leaving it out by default; just uncomment to enable: <auto-complete/> -->
+                <entity-options entity-name="BeaconType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="statusId"  use-when="beacon==null" title="${uiLabelMap.CommonStatus}" required-field="true">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BeaconStatusItem"/>
+            </drop-down>
+        </field>
+        <field name="statusId" use-when="beacon!=null" title="${uiLabelMap.CommonStatus}" required-field="true">
+            <drop-down allow-empty="false" current="first-in-list" current-description="${currentStatus.description}">
+                <option key="${currentStatus.statusId}" description="${currentStatus.description}"/>
+                <entity-options entity-name="StatusValidChangeToDetail" key-field-name="statusIdTo" description="${transitionName} (${description})">
+                    <entity-constraint name="statusId" env-name="beacon.statusId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="uuid" title="${uiLabelMap.Uuid}">
+            <drop-down>
+                <option key="f7a3e806-f5bb-43f8-ba87-0783669ebeb12"/>
+            </drop-down>
+        </field>
+        <field name="majorId" title="${uiLabelMap.MajorId}" required-field="true"><text/></field>
+        <field name="minorId" title="${uiLabelMap.MinorId}" required-field="true"><text default-value="1001"/></field>
+        <field name="macAddress" title="${uiLabelMap.MacAddress}" required-field="true"><text/></field>
+        <field name="transmissionPower" title="${uiLabelMap.TransmissionPower}" required-field="true">
+            <drop-down>
+                <option key="2.5"/><option key="1.5"/><option key="1"/><option key="0"/><option key="-1"/><option key="-2"/>
+                <option key="-3.5"/><option key="-5"/><option key="-7"/><option key="-13.5"/><option key="-19.5"/>
+            </drop-down></field>
+        <field name="broadcastingInterval" title="${uiLabelMap.BroadcastingInterval}" required-field="true"><text default-value="1000"/></field>
+        <field name="beaconName" title="${uiLabelMap.FormFieldTitle_beaconName}"><hidden/></field>
+<!--        <field name="beaconName" title="${uiLabelMap.FormFieldTitle_beaconName}" required-field="true" widget-style="required"><text placeholder="${uiLabelMap.FormFieldTitle_beaconName}"/></field>-->
+        <field name="description" title="${uiLabelMap.CommonDescription}"><hidden/></field>
+        <field name="longDescription" title="${uiLabelMap.BeaconLongDescription}"><hidden/></field>
+        <field name="comments"><hidden/></field>
+        <field name="beaconSize"><hidden/></field>
+        <field name="beaconDate"><hidden/></field>
+        <field name="anotherDate"><hidden/></field>
+        <field name="partyId"><hidden/></field>
+        <field name="anotherText"><hidden/>
+<!--            <drop-down allow-empty="true">-->
+<!--                <option key="Explicit Option" description="${uiLabelMap.BeaconExplicitOption}"/>-->
+<!--                <entity-options entity-name="BeaconType" key-field-name="beaconTypeId">-->
+<!--                    <entity-order-by field-name="description"/>-->
+<!--                </entity-options>-->
+<!--            </drop-down>-->
+        </field>
+        <field name="displayAnotherText" use-when="anotherText!=null"><hidden/>
+<!--            <display description="${beacon.anotherText}"/>-->
+        </field>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}">
+            <lookup target-form-name="LookupBusinessName"/>
+        </field>
+        <field name="submitButton" use-when="beacon==null" title="${uiLabelMap.CommonCreate}"><submit button-type="button"/></field>
+        <field name="submitButton" use-when="beacon!=null" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+    </form>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (EditBeacon) would
+        have these settings. -->
+    <form name="EditBeaconBackgroundSubmit" type="single" extends="EditBeacon" target="updateBeaconAjax">
+        <alt-target use-when="ajaxBeacon==null" target="createBeaconAjax"/>
+        <field name="statusId" use-when="ajaxBeacon==null" title="${uiLabelMap.CommonStatus}" id-name="statusId">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BeaconStatusItem"/>
+            </drop-down>
+        </field>
+        <on-event-update-area event-type="submit" area-id="ListBeaconsAjax" area-target="ListBeaconFormOnly"/>
+        <!--on-event-update-area event-type="submit" area-id="EditBeaconAjax" area-target="CreateBeaconFormOnly"/--><!-- JLR: this does not seem to be useful -->
+    </form>
+
+    <!-- BeaconItem -->
+    <grid name="ListBeaconItems"  list-name="beaconItems"  target="updateBeaconItem">
+        <actions>
+            <entity-condition entity-name="BeaconItem">
+                <condition-expr field-name="beaconId" from-field="beaconId"/>
+                <order-by field-name="beaconItemSeqId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateBeaconItem"/>
+        <field name="beaconId"><hidden/></field>
+        <field name="beaconItemSeqId" title="${uiLabelMap.CommonItem}"><display/></field>
+        <field name="description"><text size="30"/></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteBeaconItem" also-hidden="false" confirmation-message="${uiLabelMap.CommonConfirmDelete}" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="beaconId"/>
+                <parameter param-name="beaconItemSeqId"/>
+            </hyperlink>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+    </grid>
+
+    <form name="AddBeaconItem" type="single" target="createBeaconItem" title="">
+        <auto-fields-service service-name="createBeaconItem"/>
+        <field name="beaconId"><hidden/></field>
+        <field name="beaconItemSeqId"><ignored/><!-- this will be auto-sequenced --></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button" request-confirmation="true"/></field>
+    </form>
+
+    <!-- BeaconFeatureAppl -->
+    <grid name="ListBeaconFeatureAppls"  list-name="beaconFeatureAppls"  target="beacon_updateBeaconFeatureAppl">
+        <actions>
+            <entity-condition entity-name="BeaconFeatureAppl">
+                <condition-expr field-name="beaconId" from-field="beaconId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateBeaconFeatureAppl"/>
+        <field name="beaconId"><hidden/></field>
+        <field name="beaconFeatureId" title="${uiLabelMap.BeaconFeature}">
+            <display-entity entity-name="BeaconFeature">
+                <sub-hyperlink target="EditBeaconFeature" description="${beaconFeatureId}" link-style="buttontext">
+                    <parameter param-name="beaconFeatureId"/>
+                </sub-hyperlink>
+            </display-entity>
+        </field>
+        <field name="fromDate"><display/></field>
+        <field name="beaconFeatureApplTypeId" title="${uiLabelMap.CommonType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BeaconFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="beacon_deleteBeaconFeatureAppl" also-hidden="false" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="beaconId"/>
+                <parameter param-name="beaconFeatureId"/>
+                <parameter param-name="fromDate"/>
+            </hyperlink>
+        </field>
+    </grid>
+
+    <form name="AddBeaconFeatureAppl" type="single" target="beacon_createBeaconFeatureAppl" title="">
+        <auto-fields-service service-name="createBeaconFeatureAppl"/>
+        <field name="beaconId"><hidden/></field>
+        <field name="beaconFeatureId" title="${uiLabelMap.BeaconFeature}">
+            <lookup target-form-name="LookupBeaconFeature"/>
+        </field>
+        <field name="beaconFeatureApplTypeId" title="${uiLabelMap.CommonType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BeaconFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="SetBeaconPdfPassword" type="single" target="BeaconReportPdf" title="">
+        <field name="beaconId"><hidden/></field>
+        <field name="ownerPassword" title="${uiLabelMap.PDFOwnerPassword}"><text size="15" maxlength="250"/></field>
+        <field name="userPassword" title="${uiLabelMap.PDFUserPassword}"><text size="15" maxlength="250"/></field>
+        <field name="allowPrint" title="${uiLabelMap.PDFAllowPrint}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowCopyContent" title="${uiLabelMap.PDFAllowCopyContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditContent" title="${uiLabelMap.PDFAllowEditContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditAnnotations" title="${uiLabelMap.PDFAllowEditAnnotations}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowFillInForms" title="${uiLabelMap.PDFAllowFillInForms}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAccessContent" title="${uiLabelMap.PDFAllowAccessContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAssembleDocument" title="${uiLabelMap.PDFAllowAssembleDocument}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowPrintHq" title="${uiLabelMap.PDFAllowPrintHq}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encrypt-metadata" title="${uiLabelMap.PDFEncryptMetadata}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encryption-length" title="${uiLabelMap.PDFEncryptionLength}"><text size="15"/></field>
+        <field name="submitButton" title="${uiLabelMap.BeaconGeneratePDF}"><submit button-type="button"/></field>
+    </form>
+</forms>

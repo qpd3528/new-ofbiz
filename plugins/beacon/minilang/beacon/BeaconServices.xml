@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<simple-methods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Simple-Method" xsi:schemaLocation="http://ofbiz.apache.org/Simple-Method http://ofbiz.apache.org/dtds/simple-methods.xsd">
+    <!-- BeaconStatus methods -->
+    <simple-method method-name="createBeaconStatus" short-description="create a BeaconItem">
+        <now-timestamp field="nowTimestamp"/>
+
+        <!-- find the most recent status record and set the statusEndDate -->
+        <entity-and entity-name="BeaconStatus" list="oldBeaconStatusList">
+            <field-map field-name="beaconId" from-field="parameters.beaconId"/>
+            <order-by field-name="-statusDate"/>
+        </entity-and>
+        <first-from-list list="oldBeaconStatusList" entry="oldBeaconStatus"/>
+        <if-not-empty field="oldBeaconStatus">
+            <set field="oldBeaconStatus.statusEndDate" from-field="nowTimestamp"/>
+            <store-value value-field="oldBeaconStatus"/>
+        </if-not-empty>
+
+        <make-value entity-name="BeaconStatus" value-field="newEntity"/>
+        <set-pk-fields map="parameters" value-field="newEntity"/>
+        <set-nonpk-fields map="parameters" value-field="newEntity"/>
+        <set field="newEntity.statusDate" from-field="nowTimestamp"/>
+        <set field="newEntity.changeByUserLoginId" from-field="userLogin.userLoginId"/>
+        <create-value value-field="newEntity"/>
+    </simple-method>
+
+    <!-- Beacon ServiceTest Service -->
+    <simple-method method-name="testCreateBeaconService" short-description="test the create beacon service" login-required="false">
+        <set field="createBeaconMap.beaconTypeId" value="CONTRIVED"/>
+        <set field="createBeaconMap.beaconName" value="Test Beacon"/>
+        <set field="createBeaconMap.statusId" value="EXST_IN_DESIGN"/>
+
+        <entity-one entity-name="UserLogin" value-field="createBeaconMap.userLogin" auto-field-map="false">
+            <field-map field-name="userLoginId" value="system"/>
+        </entity-one>
+
+        <call-service service-name="createBeacon" in-map-name="createBeaconMap">
+            <result-to-field result-name="beaconId" field="beaconId"/>
+        </call-service>
+
+        <entity-one entity-name="Beacon" value-field="beacon"/>
+
+        <assert>
+            <not><if-empty field="beacon"/></not>
+            <if-compare-field field="beacon.beaconTypeId" to-field="createBeaconMap.beaconTypeId" operator="equals"/>
+            <if-compare-field field="beacon.beaconName" to-field="createBeaconMap.beaconName" operator="equals"/>
+            <if-compare-field field="beacon.statusId" to-field="createBeaconMap.statusId" operator="equals"/>
+        </assert>
+
+        <check-errors/>
+    </simple-method>
+</simple-methods>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://ofbiz.apache.org/Widget-Menu" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+    <menu name="BeaconAppBar" title="${uiLabelMap.BeaconApplication}" extends="CommonAppBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BeaconMenuItem" title="${uiLabelMap.BeaconBeacon}">
+            <link target="FindBeacon"/>
+        </menu-item>
+<!--        <menu-item name="BeaconFeature" title="${uiLabelMap.BeaconFeature}">-->
+<!--            <link target="FindBeaconFeature"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="FormWidgetBeacons" title="${uiLabelMap.BeaconFormWidgetBeacons}">-->
+<!--            <link target="FormWidgetBeacons"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="AjaxBeacon" title="${uiLabelMap.BeaconAjaxBeacons}">-->
+<!--            <link target="authview/findBeaconAjax"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="portalPage" parent-portal-page-value="BEACON"/>-->
+<!--        <menu-item name="Dashboard" title="${uiLabelMap.BeaconDashboard}" align-style="opposed">-->
+<!--            <link target="ManagePortalPages" link-type="anchor">-->
+<!--                <parameter param-name="parentPortalPageId" value="BEACON"/>-->
+<!--            </link>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BeaconGeoLocation" title="${uiLabelMap.CommonGeoLocation}">-->
+<!--            <link target="BeaconGeoLocationPointSet1"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BeaconCharts" title="${uiLabelMap.BeaconChart}">-->
+<!--            <link target="BeaconBarChart"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BeaconCompleteFop" title="${uiLabelMap.ContentFopFonts}">-->
+<!--                <link target="fonts.pdf" target-window="_BLANK"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BeaconCompoundWidgets" title="${uiLabelMap.BeaconCompoundWidgets}">-->
+<!--                <link target="CompoundWidgets1"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BeaconReact" title="${uiLabelMap.BeaconReactBeacons}">-->
+<!--                <link target="ReactBeacon"/>-->
+<!--        </menu-item>-->
+    </menu>
+
+    <menu name="EditBeacon" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="EditBeacon" title="${uiLabelMap.BeaconBeacon}">
+            <link target="EditBeacon">
+                <parameter param-name="beaconId"/>
+            </link>
+        </menu-item>
+        <menu-item name="EditBeaconItems" title="${uiLabelMap.CommonItems}">
+            <link target="EditBeaconItems">
+                <parameter param-name="beaconId"/>
+            </link>
+        </menu-item>
+        <menu-item name="EditBeaconFeatureAppls" title="${uiLabelMap.BeaconFeatures}">
+            <link target="EditBeaconFeatureAppls">
+                <parameter param-name="beaconId"/>
+            </link>
+        </menu-item>
+    </menu>
+
+    <menu name="EditBeaconFeature" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="EditBeaconFeature" title="${uiLabelMap.BeaconFeature}">
+            <link target="EditBeaconFeature"/>
+        </menu-item>
+        <menu-item name="EditBeaconFeatureBeaconAppls" title="${uiLabelMap.BeaconBeacons}">
+            <link target="EditBeaconFeatureBeaconAppls"/>
+        </menu-item>
+    </menu>
+
+    <menu name="BeaconGeoLocation" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BeaconGeoLocationPointSet1" title="${uiLabelMap.PointSet1}"><link target="BeaconGeoLocationPointSet1"/></menu-item>
+        <menu-item name="BeaconGeoLocationPointSet2" title="${uiLabelMap.PointSet2}"><link target="BeaconGeoLocationPointSet2"/></menu-item>
+        <menu-item name="BeaconGeoLocationPointSet3" title="${uiLabelMap.PointSet3}"><link target="BeaconGeoLocationPointSet3"/></menu-item>
+        <menu-item name="BeaconGeoLocationPointSet4" title="${uiLabelMap.PointSet4}"><link target="BeaconGeoLocationPointSet4"/></menu-item>
+        <menu-item name="BeaconGeoLocationAddress" title="${uiLabelMap.BeaconPointAddress}"><link target="BeaconGeoLocationAddress"/></menu-item>
+        <!--Beacons using openstreetmap -->
+        <menu-item name="BeaconOsmGeoLocationPointSet1" title="${uiLabelMap.OsmPointSet1}"><link target="BeaconOsmGeoLocationPointSet1"/></menu-item>
+        <menu-item name="BeaconOsmGeoLocationPointSet2" title="${uiLabelMap.OsmPointSet2}"><link target="BeaconOsmGeoLocationPointSet2"/></menu-item>
+        <menu-item name="BeaconOsmGeoLocationPointSet3" title="${uiLabelMap.OsmPointSet3}"><link target="BeaconOsmGeoLocationPointSet3"/></menu-item>
+        <menu-item name="BeaconOsmGeoLocationPointSet4" title="${uiLabelMap.OsmPointSet4}"><link target="BeaconOsmGeoLocationPointSet4"/></menu-item>
+    </menu>
+
+    <menu name="BeaconCharts" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BeaconBarChart" title="${uiLabelMap.BeaconBarChart}"><link target="BeaconBarChart"/></menu-item>
+        <menu-item name="BeaconPieChart" title="${uiLabelMap.BeaconPieChart}"><link target="BeaconPieChart"/></menu-item>
+    </menu>
+
+</menus>

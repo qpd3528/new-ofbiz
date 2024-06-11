@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <!-- list all beacons in a tabular format -->
+    <screen name="FindBeacon">
+        <section>
+            <actions>
+                <set field="headerItem" value="BeaconMenuItem"/>
+                <set field="helpAnchor" value="_the_beacon_main_page"/>
+                <set field="titleProperty" value="PageTitleFindBeacon"/>
+                <set field="beaconCtx" from-field="parameters"/>
+                <set field="formBeaconListName" value="${groovy:
+                    if (parameters.listOtherElements == 'items') return 'ListBeaconsWithItems';
+                    else if (parameters.listOtherElements == 'features') return 'ListBeaconsWithFeatures';
+                    else if (parameters.listOtherElements == 'status') return 'ListBeaconsWithStatus';
+                    else return 'ListBeacons'}"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <section>
+                            <condition>
+                                <if-has-permission permission="BEACON" action="_VIEW"/>
+                            </condition>
+                            <widgets>
+                                <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
+                                    <decorator-section name="menu-bar">
+                                        <container style="button-bar"><link target="EditBeaconLayer" link-type="layered-modal" text="${uiLabelMap.BeaconNewBeacon}" style="buttontext create"/></container>
+                                    </decorator-section>
+                                    <decorator-section name="search-options">
+                                        <include-form name="FindBeacons" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                                    </decorator-section>
+                                    <decorator-section name="search-results">
+                                        <include-grid name="${formBeaconListName}" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                                    </decorator-section>
+                                </decorator-screen>
+                            </widgets>
+                            <fail-widgets>
+                                <label style="h3">${uiLabelMap.BeaconViewPermissionError}</label>
+                            </fail-widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="ListBeaconExport">
+        <section>
+            <widgets>
+                <decorator-screen name="SimpleDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <section>
+                            <condition>
+                                <if-has-permission permission="BEACON" action="_VIEW"/>
+                            </condition>
+                            <actions>
+                                <set field="beaconCtx" from-field="parameters"/>
+                            </actions>
+                            <widgets>
+                                <include-grid name="ListBeaconExport" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                            </widgets>
+                            <fail-widgets>
+                                <label style="h3">${uiLabelMap.BeaconViewPermissionError}</label>
+                            </fail-widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBeaconLayer">
+        <section>
+            <actions>
+                <property-map resource="BeaconUiLabels" map-name="uiLabelMap" global="true"/>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+                <set field="titleProperty" value="PageTitleEditBeacon"/>
+                <set field="tabButtonItem" value="EditBeacon"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+                <entity-one entity-name="Beacon" value-field="beacon"/>
+            </actions>
+            <widgets>
+                <include-form name="EditBeacon" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBeacon">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleEditBeacon"/>
+                <set field="tabButtonItem" value="EditBeacon"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+                <entity-one entity-name="Beacon" value-field="beacon"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBeaconDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="EditBeacon" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconReport">
+        <section>
+            <actions>
+                <property-map resource="BeaconUiLabels" map-name="uiLabelMap" global="true"/>
+                <set field="titleProperty" value="PageTitleEditBeacon"/>
+                <set field="tabButtonItem" value="EditBeacon"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+                <entity-one entity-name="Beacon" value-field="beacon"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="SimpleDecorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-form name="EditBeacon" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBeaconItems">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleEditBeaconItems"/>
+                <set field="tabButtonItem" value="EditBeaconItems"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBeaconDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-grid name="ListBeaconItems" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                        <include-form name="AddBeaconItem" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconItemsInLine">
+        <section>
+            <widgets>
+                 <link text="${uiLabelMap.CommonEdit}" target="EditBeaconItems">
+                     <parameter param-name="beaconId" from-field="beaconId"/>
+                 </link>
+                 <include-grid name="ListBeaconItemsInLine" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBeaconFeatureAppls">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleEditBeaconFeatureAppls"/>
+                <set field="tabButtonItem" value="EditBeaconFeatureAppls"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBeaconDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-grid name="ListBeaconFeatureAppls" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                        <include-form name="AddBeaconFeatureAppl" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="help">
+        <section>
+            <actions>
+                <property-map resource="BeaconHelpUiLabels" map-name="uiLabelMap" global="true"/>
+                <property-map resource="BeaconUiLabels" map-name="uiLabelMap" global="true"/>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+                <set field="layoutSettings.companyName" from-field="uiLabelMap.BeaconCompanyName" global="true"/>
+            </actions>
+            <widgets>
+                <include-screen name="help" location="component://common/widget/CommonScreens.xml"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconGeoLocationPointSet1">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconGeoLocationPointSet1"/>
+                <set field="geoPoints[+0].lat" value="37.4419"/>
+                <set field="geoPoints[0].lon" value="-122.1419"/>
+                <set field="geoPoints[+1].lat" value="37.4819"/>
+                <set field="geoPoints[1].lon" value="-122.1519"/>
+                <set field="geoPoints[+2].lat" value="37.4719"/>
+                <set field="geoPoints[2].lon" value="-122.1319"/>
+                <set field="geoCenter.lat" value="37.4419"/>
+                <set field="geoCenter.lon" value="-122.1419"/>
+                <set field="geoCenter.zoom" value="13"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconGeoLocationPointSet2">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconGeoLocationPointSet2"/>
+                <set field="geoPoints[+0].lat" value="37.4459"/>
+                <set field="geoPoints[0].lon" value="-122.1489"/>
+                <set field="geoPoints[+1].lat" value="37.4829"/>
+                <set field="geoPoints[1].lon" value="-122.1599"/>
+                <set field="geoPoints[+2].lat" value="37.4769"/>
+                <set field="geoPoints[2].lon" value="-122.1219"/>
+                <set field="geoCenter.lat" value="37.4419"/>
+                <set field="geoCenter.lon" value="-122.1419"/>
+                <set field="geoCenter.zoom" value="12"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconGeoLocationPointSet3">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconGeoLocationPointSet3"/>
+                <set field="geoPoints[+0].lat" value="37.4379"/>
+                <set field="geoPoints[0].lon" value="-122.1119"/>
+                <set field="geoPoints[+1].lat" value="37.4819"/>
+                <set field="geoPoints[1].lon" value="-122.1519"/>
+                <set field="geoPoints[+2].lat" value="37.4229"/>
+                <set field="geoPoints[2].lon" value="-122.1369"/>
+                <set field="geoCenter.lat" value="37.4419"/>
+                <set field="geoCenter.lon" value="-122.1419"/>
+                <set field="geoCenter.zoom" value="11"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconGeoLocationPointSet4">
+        <section>
+            <actions>
+                <set field="headerItem" value="BeaconGeoLocation"/>
+                <set field="tabButtonItem" value="BeaconGeoLocationPointSet4"/>
+                <set field="geoChart.dataSourceId" value="GEOPT_GOOGLE"/>
+                <set field="geoChart.width" value="600px"/>
+                <set field="geoChart.height" value="500px"/>
+                <set field="geoChart.points" from-field="geoPoints"/>
+                <set field="geoChart.center" from-field="geoCenter"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="pre-body">
+                        <include-menu name="BeaconGeoLocation" location="component://beacon/widget/beacon/BeaconMenus.xml"/>
+                    </decorator-section>
+                    <decorator-section name="body">
+                        <section>
+                            <widgets>
+                                <section>
+                                    <actions>
+                                        <set field="geoPoints[+0].lat" value="37.4459"/>
+                                        <set field="geoPoints[0].lon" value="-122.1489"/>
+                                        <set field="geoPoints[+1].lat" value="37.4829"/>
+                                        <set field="geoPoints[1].lon" value="-122.1599"/>
+                                        <set field="geoPoints[+2].lat" value="37.4769"/>
+                                        <set field="geoPoints[2].lon" value="-122.1219"/>
+                                        <set field="geoCenter.lat" value="37.4419"/>
+                                        <set field="geoCenter.lon" value="-122.1419"/>
+                                        <set field="geoCenter.zoom" value="12"/>
+                                        <set field="geoChart.id" value="chart1"/>
+                                        <set field="geoChart.dataSourceId" value="GEOPT_GOOGLE"/>
+                                        <set field="geoChart.width" value="600px"/>
+                                        <set field="geoChart.height" value="500px"/>
+                                        <set field="geoChart.points" from-field="geoPoints"/>
+                                        <set field="geoChart.center" from-field="geoCenter"/>
+                                    </actions>
+                                    <widgets>
+                                        <container style="clear" />
+                                        <include-screen name="geoChart" location="component://common/widget/CommonScreens.xml"/>
+                                    </widgets>
+                                </section>
+                                <section>
+                                    <actions>
+                                        <set field="geoPoints" value=""/>
+                                        <set field="geoPoints[+0].lat" value="37.4379"/>
+                                        <set field="geoPoints[0].lon" value="-122.1119"/>
+                                        <set field="geoPoints[+1].lat" value="37.4819"/>
+                                        <set field="geoPoints[1].lon" value="-122.1519"/>
+                                        <set field="geoPoints[+2].lat" value="37.4229"/>
+                                        <set field="geoPoints[2].lon" value="-122.1369"/>
+                                        <set field="geoCenter.lat" value="37.4419"/>
+                                        <set field="geoCenter.lon" value="-122.1419"/>
+                                        <set field="geoCenter.zoom" value="11"/>
+                                        <set field="geoChart.id" value="chart2"/>
+                                        <set field="geoChart.dataSourceId" value="GEOPT_GOOGLE"/>
+                                        <set field="geoChart.width" value="800px"/>
+                                        <set field="geoChart.height" value="500px"/>
+                                        <set field="geoChart.points" from-field="geoPoints"/>
+                                        <set field="geoChart.center" from-field="geoCenter"/>
+                                    </actions>
+                                    <widgets>
+                                        <include-screen name="geoChart" location="component://common/widget/CommonScreens.xml"/>
+                                    </widgets>
+                                </section>
+                            </widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconGeoLocationAddress">
+        <section>
+            <actions>
+                <set field="headerItem" value="BeaconGeoLocation"/>
+                <set field="tabButtonItem" value="BeaconGeoLocationAddress"/>
+                <set field="geoChart.dataSourceId" value="GEOPT_ADDRESS_GOOGLE"/>
+                <set field="geoChart.width" value="800px"/>
+                <set field="geoChart.height" value="500px"/>
+
+                <set field="contactMechId" value="9015"/>
+                <entity-one entity-name="PostalAddress" value-field="address"/>
+                <set field="pointAddress" value="${address.address1} ${address.address2} ${address.postalCode} ${address.city} ${address.stateProvinceGeoId} ${address.countryGeoId}"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="pre-body">
+                        <include-menu name="BeaconGeoLocation" location="component://beacon/widget/beacon/BeaconMenus.xml"/>
+                    </decorator-section>
+                    <decorator-section name="body">
+                        <section>
+                            <widgets>
+                                <container style="clear" />
+                                <label>Using Google geocoding services may need to register for an individual key. Please visit this website to have more details :</label>
+                                <link target="http://code.google.com/intl/fr/apis/maps/signup.html" url-mode="plain" text="Google Maps API"/>
+                                <label style="h3">Geolocation of DemoCustomer, living at ${pointAddress}</label>
+                                <include-screen name="geoChart" location="component://common/widget/CommonScreens.xml"/>
+                            </widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconPieChart">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconPieChart"/>
+                <set field="chartType" value="Pie"/>
+                <set field="chartId" value="pieChartDiv"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconChartsDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconBarChart">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconBarChart"/>
+                <set field="chartType" value="Bars"/>
+                <set field="chartId" value="barChartDiv"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconChartsDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconOsmGeoLocationPointSet1">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconOsmGeoLocationPointSet1"/>
+                <set field="geoPoints[+0].lat" value="37.4419"/>
+                <set field="geoPoints[0].lon" value="-122.1419"/>
+                <set field="geoPoints[+1].lat" value="37.4819"/>
+                <set field="geoPoints[1].lon" value="-122.1519"/>
+                <set field="geoPoints[+2].lat" value="37.4719"/>
+                <set field="geoPoints[2].lon" value="-122.1319"/>
+                <set field="geoCenter.lat" value="37.4629"/>
+                <set field="geoCenter.lon" value="-122.1447"/>
+                <set field="geoCenter.zoom" value="13"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconOsmGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconOsmGeoLocationPointSet2">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconOsmGeoLocationPointSet2"/>
+                <set field="geoPoints[+0].lat" value="37.4459"/>
+                <set field="geoPoints[0].lon" value="-122.1489"/>
+                <set field="geoPoints[+1].lat" value="37.4829"/>
+                <set field="geoPoints[1].lon" value="-122.1599"/>
+                <set field="geoPoints[+2].lat" value="37.4769"/>
+                <set field="geoPoints[2].lon" value="-122.1219"/>
+                <set field="geoCenter.lat" value="37.4419"/>
+                <set field="geoCenter.lon" value="-122.1419"/>
+                <set field="geoCenter.zoom" value="12"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconOsmGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconOsmGeoLocationPointSet3">
+        <section>
+            <actions>
+                <set field="tabButtonItem" value="BeaconOsmGeoLocationPointSet3"/>
+                <set field="geoPoints[+0].lat" value="37.4379"/>
+                <set field="geoPoints[0].lon" value="-122.1119"/>
+                <set field="geoPoints[+1].lat" value="37.4819"/>
+                <set field="geoPoints[1].lon" value="-122.1519"/>
+                <set field="geoPoints[+2].lat" value="37.4229"/>
+                <set field="geoPoints[2].lon" value="-122.1369"/>
+                <set field="geoCenter.lat" value="37.4419"/>
+                <set field="geoCenter.lon" value="-122.1419"/>
+                <set field="geoCenter.zoom" value="11"/>
+            </actions>
+            <widgets>
+                <include-screen name="CommonBeaconOsmGeoLocationDecorator" location="${parameters.mainDecoratorLocation}"/>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="BeaconOsmGeoLocationPointSet4">
+        <section>
+            <actions>
+                <set field="headerItem" value="BeaconGeoLocation"/>
+                <set field="tabButtonItem" value="BeaconOsmGeoLocationPointSet4"/>
+                <set field="geoChart.dataSourceId" value="GEOPT_GOOGLE"/>
+                <set field="geoChart.width" value="600px"/>
+                <set field="geoChart.height" value="500px"/>
+                <set field="geoChart.points" from-field="geoPoints"/>
+                <set field="geoChart.center" from-field="geoCenter"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="pre-body">
+                        <include-menu name="BeaconGeoLocation" location="component://beacon/widget/beacon/BeaconMenus.xml"/>
+                    </decorator-section>
+                    <decorator-section name="body">
+                        <section>
+                            <widgets>
+                                <section>
+                                    <actions>
+                                        <set field="geoPoints[+0].lat" value="37.4459"/>
+                                        <set field="geoPoints[0].lon" value="-122.1489"/>
+                                        <set field="geoPoints[+1].lat" value="37.4829"/>
+                                        <set field="geoPoints[1].lon" value="-122.1599"/>
+                                        <set field="geoPoints[+2].lat" value="37.4769"/>
+                                        <set field="geoPoints[2].lon" value="-122.1219"/>
+                                        <set field="geoCenter.lat" value="37.4419"/>
+                                        <set field="geoCenter.lon" value="-122.1419"/>
+                                        <set field="geoCenter.zoom" value="12"/>
+                                        <set field="geoChart.id" value="chart1"/>
+                                        <set field="geoChart.dataSourceId" value="GEOPT_OSM"/>
+                                        <set field="geoChart.width" value="600px"/>
+                                        <set field="geoChart.height" value="500px"/>
+                                        <set field="geoChart.points" from-field="geoPoints"/>
+                                        <set field="geoChart.center" from-field="geoCenter"/>
+                                    </actions>
+                                    <widgets>
+                                        <container style="clear" />
+                                        <include-screen name="geoChart" location="component://common/widget/CommonScreens.xml"/>
+                                    </widgets>
+                                </section>
+                                <section>
+                                    <actions>
+                                        <set field="geoPoints" value=""/>
+                                        <set field="geoPoints[+0].lat" value="37.4379"/>
+                                        <set field="geoPoints[0].lon" value="-122.1119"/>
+                                        <set field="geoPoints[+1].lat" value="37.4819"/>
+                                        <set field="geoPoints[1].lon" value="-122.1519"/>
+                                        <set field="geoPoints[+2].lat" value="37.4229"/>
+                                        <set field="geoPoints[2].lon" value="-122.1369"/>
+                                        <set field="geoCenter.lat" value="37.4419"/>
+                                        <set field="geoCenter.lon" value="-122.1419"/>
+                                        <set field="geoCenter.zoom" value="11"/>
+                                        <set field="geoChart.id" value="chart2"/>
+                                        <set field="geoChart.dataSourceId" value="GEOPT_OSM"/>
+                                        <set field="geoChart.width" value="800px"/>
+                                        <set field="geoChart.height" value="500px"/>
+                                        <set field="geoChart.points" from-field="geoPoints"/>
+                                        <set field="geoChart.center" from-field="geoCenter"/>
+                                    </actions>
+                                    <widgets>
+                                        <include-screen name="geoChart" location="component://common/widget/CommonScreens.xml"/>
+                                    </widgets>
+                                </section>
+                            </widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconReportPdfOptions">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleSetBeaconPdfPassword"/>
+                <set field="tabButtonItem" value="EditBeacon"/>
+                <set field="beaconId" from-field="parameters.beaconId"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBeaconDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="SetBeaconPdfPassword" location="component://beacon/widget/beacon/BeaconForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BeaconReportPdfBarcode">
+        <section>
+            <actions>
+                <!-- base/top/specific map first, then more common map added for shared labels -->
+                <property-map resource="ProductUiLabels" map-name="uiLabelMap" global="true"/>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+
+                <set field="beaconId" from-field="parameters.beaconId"/>
+                <entity-one entity-name="Beacon" value-field="beacon"/>
+            </actions>
+            <widgets>
+                <platform-specific>
+                    <xsl-fo><html-template location="component://beacon/template/reports/BarCode.fo.ftl"/></xsl-fo>
+                </platform-specific>
+            </widgets>
+        </section>
+    </screen>
+</screens>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <form name="FindTalkFeatures" type="single" target="FindTalkFeature" default-entity-name="TalkFeature">
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done --></field>
+        <field name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}"><text-find/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><text-find/></field>
+        <field name="searchButton" title="${uiLabelMap.CommonFind}" widget-style="smallSubmit"><submit button-type="button"/></field>
+    </form>
+
+
+    <grid name="ListTalkFeatures" list-name="listIt" paginate-target="FindTalkFeature" default-entity-name="TalkFeature"
+        separate-columns="true" odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+        <actions>
+            <service service-name="performFind" result-map="result" result-map-list="listIt">
+                <field-map field-name="inputFields" from-field="talkFeatureCtx"/>
+                <field-map field-name="entityName" value="TalkFeature"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
+        </actions>
+        <field name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}" widget-style="buttontext">
+            <hyperlink description="${talkFeatureId}" target="EditTalkFeature" also-hidden="false">
+                <parameter param-name="talkFeatureId"/>
+            </hyperlink>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><display/></field>
+    </grid>
+
+    <form name="EditTalkFeature" type="single" target="updateTalkFeature" title="" default-map-name="talkFeature">
+        <actions>
+            <entity-one entity-name="StatusItem" value-field="currentStatus" auto-field-map="false">
+                <field-map field-name="statusId" from-field="talk.statusId"/>
+            </entity-one>
+        </actions>
+        <alt-target use-when="talkFeature==null" target="createTalkFeature"/>
+        <auto-fields-service service-name="updateTalkFeature"/>
+        <field use-when="talkFeature!=null" name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}"><display/></field>
+        <field use-when="talkFeature==null @and talkFeatureId==null" name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}"><ignored/></field>
+        <field use-when="talkFeature==null @and talkFeatureId!=null" name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}"><display description="${uiLabelMap.CommonCannotBeFound}: [${talkFeatureId}]" also-hidden="false"/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}" required-field="true"/>
+        <field name="featureSourceEnumId" title="${uiLabelMap.TalkFeatureSource}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Enumeration" key-field-name="enumId" description="${description} [${enumCode}]">
+                    <entity-constraint name="enumTypeId" value="EXMPL_FEAT_SOURCE"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" use-when="talkFeature==null" title="${uiLabelMap.CommonCreate}"><submit button-type="button"/></field>
+        <field name="submitButton" use-when="talkFeature!=null" title="${uiLabelMap.TalkUpdate}"><submit button-type="button"/></field>
+    </form>
+
+    <!-- TalkFeatureAppl -->
+    <grid name="ListTalkFeatureAppls"  list-name="talkFeatureAppls"  target="feature_updateTalkFeatureAppl">
+        <actions>
+            <entity-condition entity-name="TalkFeatureAppl">
+                <order-by field-name="talkId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateTalkFeatureAppl"/>
+        <field name="talkId" title="${uiLabelMap.TalkTalk}">
+            <display-entity entity-name="Talk" description="${talkName}">
+                <sub-hyperlink target="EditTalkLayer" description="${talkId}" link-style="buttontext" link-type="layered-modal">
+                    <parameter param-name="talkId"/>
+                </sub-hyperlink>
+            </display-entity>
+        </field>
+        <field name="talkFeatureId"><hidden/></field>
+        <field name="fromDate"><display/></field>
+        <field name="talkFeatureApplTypeId" title="${uiLabelMap.TalkType}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="TalkFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.TalkUpdate}"><submit button-type="button"/></field>
+        <field name="deleteLink" title="" widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="feature_deleteTalkFeatureAppl" also-hidden="false">
+                <parameter param-name="talkId"/>
+                <parameter param-name="talkFeatureId"/>
+                <parameter param-name="fromDate"/>
+            </hyperlink>
+        </field>
+    </grid>
+
+
+    <form name="AddTalkFeatureAppl" type="single" target="feature_createTalkFeatureAppl" title="">
+        <auto-fields-service service-name="createTalkFeatureAppl"/>
+        <field name="talkId" title="${uiLabelMap.TalkTalk}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Talk" description="${talkName} [${talkId}]">
+                    <entity-order-by field-name="talkName"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="talkFeatureId">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="TalkFeature" description="${description} [${talkFeatureId}]">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>        
+        </field>
+        <field name="talkFeatureApplTypeId" title="${uiLabelMap.TalkType}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="TalkFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="LookupFindTalkFeature" target="LookupTalkFeature" title="" type="single">
+        <auto-fields-entity entity-name="TalkFeature" default-field-type="find"/>
+        <field name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}"/> <!-- <text-find/> -->
+        <field name="featureSourceEnumId" title="${uiLabelMap.TalkFeatureSource}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="Enumeration" key-field-name="enumId" description="${description} [${enumCode}]">
+                    <entity-constraint name="enumTypeId" value="EXMPL_FEAT_SOURCE"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"/>
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done --></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <grid name="LookupListTalkFeature" list-name="listIt" title=""
+        paginate-target="LookupTalkFeature">
+        <actions>
+            <service service-name="performFind" result-map="result" result-map-list="listIt">
+                <field-map field-name="inputFields" from-field="parameters"/>
+                <field-map field-name="orderBy" value="description"/>
+                <field-map field-name="entityName" value="TalkFeature"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
+        </actions>
+        <!--<auto-fields-entity entity-name="TalkFeature" default-field-type="display"/>-->
+        <field name="talkFeatureId" title="${uiLabelMap.TalkTalkFeatureId}" widget-style="buttontext">
+            <hyperlink description="${talkFeatureId}" target="javascript:set_value('${talkFeatureId}')" also-hidden="false" target-type="plain"/>
+        </field>
+        <field name="featureSourceEnumId" title="${uiLabelMap.TalkFeatureSource}">
+            <display-entity entity-name="Enumeration" key-field-name="enumId" description="${description} [${enumCode}]" also-hidden="false"/>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><display also-hidden="false"/></field>
+    </grid>
+
+</forms>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <PortalPortlet portalPortletId="TALK_1" portletName="Talk 1" description="Talk portlet n. 1"
+        screenName="TalkPortlet1" screenLocation="component://talk/widget/talk/PortletScreens.xml"
+        editFormName="TalkPortlet1Edit" editFormLocation="component://talk/widget/talk/PortletEditForms.xml"
+        screenshot="/images/ofbiz_logo.png"/>
+
+    <PortalPortlet portalPortletId="TALK_2" portletName="Talk 2" description="Talk portlet n. 2"
+        screenName="TalkPortlet2" screenLocation="component://talk/widget/talk/PortletScreens.xml"
+        editFormName="TalkPortlet2Edit" editFormLocation="component://talk/widget/talk/PortletEditForms.xml"
+        screenshot="/images/opentravelsystem_logo.jpg"/>
+
+    <PortalPortlet portalPortletId="TALK_3" portletName="Talk 3" description="Talk portlet n. 3"
+        screenName="TalkPortlet3" screenLocation="component://talk/widget/talk/PortletScreens.xml"
+        editFormName="TalkPortlet3Edit" editFormLocation="component://talk/widget/talk/PortletEditForms.xml"/>
+
+    <PortletCategory portletCategoryId="TALK" description="Talk Portlet(s)"/>
+    <PortletPortletCategory portalPortletId="TALK_1" portletCategoryId="TALK"/>
+    <PortletPortletCategory portalPortletId="TALK_2" portletCategoryId="TALK"/>
+    <PortletPortletCategory portalPortletId="TALK_3" portletCategoryId="TALK"/>
+</entity-engine-xml>

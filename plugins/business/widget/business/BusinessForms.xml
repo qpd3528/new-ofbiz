@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <form name="FindBusinesss" type="single" target="FindBusiness" default-entity-name="Business">
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done --></field>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}"><text-find/></field>
+        <field name="businessName" title="${uiLabelMap.CommonName}"><text-find/></field>
+        <field name="businessRegistrationNumber" title="${uiLabelMap.businessRegistrationNumber}"><text-find/></field>
+<!--        <field name="businessTypeId" title="${uiLabelMap.CommonType}">-->
+<!--        <drop-down allow-empty="true" current-description="">-->
+<!--            <entity-options key-field-name="businessTypeId" entity-name="BusinessType">-->
+<!--                <entity-order-by field-name="description"/>-->
+<!--            </entity-options>-->
+<!--        </drop-down>-->
+<!--        </field>-->
+<!--        <field name="statusId" title="${uiLabelMap.CommonStatus}">-->
+<!--            <drop-down allow-empty="true" current-description="">-->
+<!--                <entity-options key-field-name="statusId" entity-name="BusinessStatusItem"/>-->
+<!--            </drop-down>-->
+<!--        </field>-->
+        <field name="businessClassification" title="${uiLabelMap.businessClassification}">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="businessClassificationTypeId" entity-name="BusinessClassificationType"/>
+            </drop-down>
+        </field>
+
+        <field name="affiliationTypeId" title="${uiLabelMap.AffiliationTypeId}">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="affiliationTypeId" entity-name="AffiliationType"/>
+            </drop-down>
+<!--            <check>-->
+<!--                <entity-options key-field-name="affiliationTypeId" entity-name="AffiliationType">-->
+<!--                    <entity-order-by field-name="description"/>-->
+<!--                </entity-options>-->
+<!--            </check>-->
+        </field>
+
+        <field name="statusId" title="${uiLabelMap.CommonStatus}">
+<!--            <check>-->
+<!--                <entity-options key-field-name="statusId" entity-name="BusinessStatusItem">-->
+<!--                    <entity-order-by field-name="description"/>-->
+<!--                </entity-options>-->
+<!--            </check>-->
+            <hidden/>
+        </field>
+        <field name="majorId" title="${uiLabelMap.majorId}">
+            <lookup target-form-name="LookupBeaconName"/>
+        </field>
+
+        <field name="searchButton"><submit/></field>
+        <field name="exportButton" position="2" widget-style="smallSubmit" title=" ">
+            <hyperlink also-hidden="false" target-type="plain" description="${uiLabelMap.CommonExport}"
+                       target="javascript: document.FindBusinesss.action='ListBusinessExport'; document.FindBusinesss.submit();"/>
+        </field>
+    </form>
+
+    <grid name="ListBusinesss" list-name="listIt" paginate-target="FindBusiness" default-entity-name="Business" separate-columns="true"
+        odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+        <actions>
+            <service service-name="performFind" result-map="result" result-map-list="listIt">
+                <field-map field-name="inputFields" from-field="businessCtx"/>
+                <field-map field-name="entityName" value="Business"/>
+                <field-map field-name="orderBy" from-field="parameters.sortField"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
+            <set field="sortField" from-field="parameters.sortField"/>
+        </actions>
+        <alt-row-style use-when="'EXST_APPROVED'.equals(statusId)" style="Validate"/>
+        <alt-row-style use-when="'EXST_CANCELLED'.equals(statusId)" style="Warn"/>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}" widget-style="buttontext">
+            <hyperlink description="${businessId}" target="EditBusiness" also-hidden="false">
+                <parameter param-name="businessId"/>
+            </hyperlink>
+        </field>
+        <field name="businessName" title="${uiLabelMap.CommonName}" sort-field="true"><display/></field>
+        <field name="businessRegistrationNumber" title="${uiLabelMap.businessRegistrationNumber}" sort-field="true"><display/></field>
+        <field name="businessTypeId" title="${uiLabelMap.CommonType}"  sort-field="true"><display-entity entity-name="BusinessType"/></field>
+        <field name="statusId" title="${uiLabelMap.CommonStatus}"  sort-field="true"><display-entity entity-name="StatusItem"/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}" sort-field="true"><hidden/></field>
+        <field name="conditionalDesc" ignore-when="&quot;businessName&quot;.equals(sortField)" title="my desc"><hidden/></field>
+        <field name="majorId" title="${uiLabelMap.majorId}" sort-field="true"><display/></field>
+        <field name="delete" title="${uiLabelMap.delete}" widget-style="buttontext">
+<!--            <hyperlink description="${uiLabelMap.delete}" target="deleteBusiness" also-hidden="false" confirmation-message="${businessName}를 삭제하시겠습니까?">-->
+<!--                <parameter param-name="businessId"/>-->
+<!--            </hyperlink>-->
+            <hidden/>
+        </field>
+    </grid>
+
+    <!--business form with include an other form -->
+    <grid name="ListBusinesssWithFeatures" extends="ListBusinesss" extends-resource="component://business/widget/business/BusinessForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="features"><include-form name="BusinessFeaturesInLine" location="component://business/widget/business/BusinessForms.xml"/></field>
+    </grid>
+    <form name="BusinessFeaturesInLine" type="list" default-table-style="basic-table light-grid" default-entity-name="BusinessFeatureAppl">
+        <actions>
+            <entity-condition entity-name="BusinessFeatureAppl">
+                <condition-expr field-name="businessId" from-field="businessId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BusinessFeatureAppl" default-field-type="display"/>
+        <field name="businessId"><ignored/></field>
+    </form>
+
+    <!--business form with include a screen -->
+    <grid name="ListBusinesssWithItems" extends="ListBusinesss" extends-resource="component://business/widget/business/BusinessForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="items"><include-screen name="BusinessItemsInLine" location="component://business/widget/business/BusinessScreens.xml"/></field>
+    </grid>
+
+    <grid name="ListBusinessItemsInLine" default-table-style="basic-table light-grid">
+        <actions>
+            <entity-condition entity-name="BusinessItem">
+                <condition-expr field-name="businessId" from-field="businessId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BusinessItem" default-field-type="display"/>
+        <field name="businessId"><ignored/></field>
+    </grid>
+
+    <!--business form with include a grid -->
+    <grid name="ListBusinesssWithStatus" extends="ListBusinesss" extends-resource="component://business/widget/business/BusinessForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="status"><include-grid name="BusinessStatusInLine" location="component://business/widget/business/BusinessForms.xml"/></field>
+    </grid>
+
+    <grid name="BusinessStatusInLine" default-table-style="basic-table light-grid" default-entity-name="BusinessStatus">
+        <actions>
+            <entity-condition entity-name="BusinessStatus">
+                <condition-expr field-name="businessId" from-field="businessId"/>
+                <order-by field-name="statusDate"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="BusinessStatus" default-field-type="display"/>
+        <field name="businessId"><ignored/></field>
+    </grid>
+
+    <grid name="ListBusinessExport" extends="ListBusinesss" extends-resource="component://business/widget/business/BusinessForms.xml" paginate="false">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+    </grid>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (ListBusinesss) would
+        have these attributes.
+         For the Ajax business we want all business entities listed, so the we use the entity-condition
+         instead of the performFind service. -->
+    <grid name="ListBusinesssAjax" extends="ListBusinesss" paginate-target="authview/findBusinessAjax">
+        <actions>
+            <entity-condition entity-name="Business"><order-by field-name="businessName"/></entity-condition>
+        </actions>
+        <field name="businessId" title="${uiLabelMap.BusinessBusinessId}" widget-style="buttontext">
+            <hyperlink description="${businessId}" target="EditBusinessLayer" also-hidden="false" link-type="layered-modal">
+                <parameter param-name="businessId"/>
+            </hyperlink>
+        </field>
+        <field name="businessName" title="${uiLabelMap.CommonName}" id-name="businessName">
+            <display>
+                <in-place-editor url="/business/control/updateBusiness" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="businessId" from-field="businessId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+        <field name="description" title="${uiLabelMap.CommonDescription}" id-name="description">
+            <display>
+                <in-place-editor url="/business/control/updateBusiness" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="businessId" from-field="businessId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+        <on-event-update-area event-type="paginate" area-id="ListBusinesssAjax" area-target="ListBusinessFormOnly"/>
+    </grid>
+
+    <form name="EditBusiness" type="single" target="updateBusiness" title="" default-map-name="business" default-entity-name="Business">
+        <actions>
+            <entity-one entity-name="StatusItem" value-field="currentStatus" auto-field-map="false">
+                <field-map field-name="statusId" from-field="business.statusId"/>
+            </entity-one>
+            <set field="anotherText" from-field="business.anotherText"/>
+        </actions>
+
+        <alt-target use-when="business==null" target="createBusiness"/>
+        <auto-fields-service service-name="updateBusiness"/>
+<!--        business id를 생략하고 싶을 시 사용-->
+<!--        <field use-when="business!=null" name="businessId" title="${uiLabelMap.BusinessBusinessId}"><display/></field>-->
+<!--        <field use-when="business==null @and businessId==null" name="businessId" title="${uiLabelMap.BusinessBusinessId}"><text/></field>-->
+<!--        <field use-when="business==null @and businessId!=null" name="businessId" title="${uiLabelMap.BusinessBusinessId}"><display description="${uiLabelMap.CommonCannotBeFound}: [${businessId}]" also-hidden="false"/></field>-->
+
+        <field use-when="business!=null" name="businessId" title="${uiLabelMap.businessId}"><display/></field>
+        <field use-when="business==null&amp;&amp;businessId==null" name="businessId" title="${uiLabelMap.businessId}" tooltip="${uiLabelMap.CommonIdGeneratedIfEmpty}"><text/></field>
+        <field use-when="business==null&amp;&amp;businessId!=null" name="businessId" title="${uiLabelMap.businessId}" tooltip="${uiLabelMap.CommonCannotBeFound}: [${businessId}]"><display also-hidden="false"/></field>
+
+
+        <field name="businessTypeId" title="${uiLabelMap.CommonType}" id-name="businessTypeId" required-field="false">
+            <drop-down allow-empty="false">
+                <!-- this is a neat feature, but not good for the type because the user would have to know the possible types in order to enter at least the first letter, so leaving it out by default; just uncomment to enable: <auto-complete/> -->
+                <entity-options entity-name="BusinessType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+
+        </field>
+        <field name="statusId"  use-when="business==null" title="${uiLabelMap.CommonStatus}" required-field="false">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BusinessStatusItem"/>
+            </drop-down>
+        </field>
+        <field name="statusId" use-when="business!=null" title="${uiLabelMap.CommonStatus}" required-field="false">
+            <drop-down allow-empty="false" current="first-in-list" current-description="${currentStatus.description}">
+                <option key="${currentStatus.statusId}" description="${currentStatus.description}"/>
+                <entity-options entity-name="StatusValidChangeToDetail" key-field-name="statusIdTo" description="${transitionName} (${description})">
+                    <entity-constraint name="statusId" env-name="business.statusId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="businessName" title="${uiLabelMap.FormFieldTitle_businessName}" required-field="true"><text /></field>
+        <field name="businessName" title="${uiLabelMap.FormFieldTitle_businessName}" required-field="true" widget-style="required"><text placeholder="${uiLabelMap.FormFieldTitle_businessName}"/></field>
+        <field name="description" title="${uiLabelMap.CommonDescription}"><hidden/></field>
+        <field name="longDescription" title="${uiLabelMap.BusinessLongDescription}"><hidden/></field>
+        <field name="businessSize" title="${uiLabelMap.businessSize}"><hidden/></field>
+        <field name="businessDate" title="${uiLabelMap.businessDate}"><hidden/></field>
+        <field name="anotherDate" title="${uiLabelMap.anotherDate}"><hidden/></field>
+        <field name="anotherText">
+<!--            <drop-down allow-empty="true">-->
+<!--                <option key="Explicit Option" description="${uiLabelMap.BusinessExplicitOption}"/>-->
+<!--                <entity-options entity-name="BusinessType" key-field-name="businessTypeId">-->
+<!--                    <entity-order-by field-name="description"/>-->
+<!--                </entity-options>-->
+<!--            </drop-down>-->
+            <hidden/>
+        </field>
+        <field name="displayAnotherText" use-when="anotherText!=null">
+<!--            <display description="${business.anotherText}"/>-->
+            <hidden/>
+        </field>
+        <field name="comments" title="${uiLabelMap.comments}"><hidden/></field>
+
+<!--        entity에 새로 추가된 항목들 -->
+        <field name="businessRegistrationNumber" title="${uiLabelMap.businessRegistrationNumber}" required-field="true" widget-style="required"></field>
+        <field name="businessRegistrationCertificateCompanyName" title="${uiLabelMap.businessRegistrationCertificateCompanyName}" required-field="true" widget-style="required"></field>
+        <field name="representativeName" title="${uiLabelMap.representativeName}" required-field="true" widget-style="required"></field>
+        <field name="dateOfBusinessCommencement" title="${uiLabelMap.dateOfBusinessCommencement}" required-field="true" widget-style="required"></field>
+        <field name="address" title="${uiLabelMap.address}" required-field="true" widget-style="required"></field>
+        <field name="phoneNum" title="${uiLabelMap.phoneNum}" required-field="true" widget-style="required"></field>
+        <field name="businessType" title="${uiLabelMap.businessType}" required-field="true" widget-style="required"></field>
+        <field name="businessItem" title="${uiLabelMap.businessItem}" required-field="true" widget-style="required"></field>
+        <field name="emailAddress" title="${uiLabelMap.emailAddress}" required-field="true" widget-style="required"></field>
+        <field name="openingTime" title="${uiLabelMap.openingTime}"><hidden/></field>
+        <field name="closingTime" title="${uiLabelMap.closingTime}"><hidden/></field>
+
+        <field name="affiliationTypeId" title="${uiLabelMap.AffiliationTypeId}" required-field="true" widget-style="required">
+            <drop-down allow-empty="true" current-description="123">
+                <entity-options key-field-name="affiliationTypeId" entity-name="AffiliationType"/>
+            </drop-down>
+        </field>
+
+        <field name="taxTypeId" title="${uiLabelMap.TaxType}" required-field="true" widget-style="required">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="taxTypeId" entity-name="TaxType"/>
+            </drop-down>
+        </field>
+        <field name="businessClassificationTypeId" title="${uiLabelMap.businessClassification}" required-field="true" widget-style="required">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="businessClassificationTypeId" entity-name="BusinessClassificationType"/>
+            </drop-down>
+        </field>
+        <field name="majorId" title="${uiLabelMap.majorId}">
+            <lookup target-form-name="LookupBeaconName"/>
+        </field>
+
+
+
+        <field name="submitButton" use-when="business==null" title="${uiLabelMap.CommonCreate}"><submit button-type="button"/></field>
+        <field name="submitButton" use-when="business!=null" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+    </form>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (EditBusiness) would
+        have these settings. -->
+    <form name="EditBusinessBackgroundSubmit" type="single" extends="EditBusiness" target="updateBusinessAjax">
+        <alt-target use-when="ajaxBusiness==null" target="createBusinessAjax"/>
+        <field name="statusId" use-when="ajaxBusiness==null" title="${uiLabelMap.CommonStatus}" id-name="statusId">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BusinessStatusItem"/>
+            </drop-down>
+        </field>
+        <on-event-update-area event-type="submit" area-id="ListBusinesssAjax" area-target="ListBusinessFormOnly"/>
+        <!--on-event-update-area event-type="submit" area-id="EditBusinessAjax" area-target="CreateBusinessFormOnly"/--><!-- JLR: this does not seem to be useful -->
+    </form>
+
+    <!-- BusinessItem -->
+    <grid name="ListBusinessItems"  list-name="businessItems"  target="updateBusinessItem">
+        <actions>
+            <entity-condition entity-name="BusinessItem">
+                <condition-expr field-name="businessId" from-field="businessId"/>
+                <order-by field-name="businessItemSeqId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateBusinessItem"/>
+        <field name="businessId"><hidden/></field>
+        <field name="businessItemSeqId" title="${uiLabelMap.CommonItem}"><display/></field>
+        <field name="uuid" title="${uiLabelMap.Uuid}"><text/></field>
+        <field name="majorId" title="${uiLabelMap.MajorId}" required-field="true"><text/></field>
+        <field name="minorId" title="${uiLabelMap.MinorId}" required-field="true"><text/></field>
+        <field name="macAddress" title="${uiLabelMap.MacAddress}" required-field="true"><text/></field>
+        <field name="transmissionPower" title="${uiLabelMap.TransmissionPower}" required-field="true">
+            <drop-down>
+                <option key="2.5"/><option key="1.5"/><option key="1"/><option key="0"/><option key="-1"/><option key="-2"/>
+                <option key="-3.5"/><option key="-5"/><option key="-7"/><option key="-13.5"/><option key="-19.5"/>
+            </drop-down></field>
+        <field name="broadcastingInterval" title="${uiLabelMap.BroadcastingInterval}" required-field="true"><text/></field>
+        <field name="description"><text/></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteBusinessItem" also-hidden="false" confirmation-message="${uiLabelMap.CommonConfirmDelete}" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="businessId"/>
+                <parameter param-name="businessItemSeqId"/>
+            </hyperlink>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+    </grid>
+
+    <form name="AddBusinessItem" type="single" target="createBusinessItem" title="">
+        <auto-fields-service service-name="createBusinessItem"/>
+        <field name="businessId"><hidden/></field>
+        <field name="businessItemSeqId"><ignored/><!-- this will be auto-sequenced --></field>
+        <field name="uuid" title="${uiLabelMap.Uuid}">
+            <drop-down>
+                <option key="f7a3e806-f5bb-43f8-ba87-0783669ebeb12"/>
+            </drop-down>
+        </field>
+        <field name="majorId" title="${uiLabelMap.MajorId}" required-field="true"><text/></field>
+        <field name="minorId" title="${uiLabelMap.MinorId}" required-field="true"><text default-value="1001"/></field>
+        <field name="macAddress" title="${uiLabelMap.MacAddress}" required-field="true"><text/></field>
+        <field name="transmissionPower" title="${uiLabelMap.TransmissionPower}" required-field="true">
+            <drop-down>
+                <option key="2.5"/><option key="1.5"/><option key="1"/><option key="0"/><option key="-1"/><option key="-2"/>
+                <option key="-3.5"/><option key="-5"/><option key="-7"/><option key="-13.5"/><option key="-19.5"/>
+            </drop-down></field>
+        <field name="broadcastingInterval" title="${uiLabelMap.BroadcastingInterval}" required-field="true"><text default-value="1000"/></field>
+        <field name="description"><text/></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button" request-confirmation="true"/></field>
+    </form>
+
+    <!-- BusinessBeacon -->
+<!--    <grid name="ListBusinessBeacons"  list-name="businessBeacons"  target="updateBusinessBeacon">-->
+<!--        <actions>-->
+<!--            <entity-condition entity-name="Beacon">-->
+<!--                <condition-expr field-name="businessId" from-field="businessId"/>-->
+<!--                <order-by field-name="businessId"/>-->
+<!--            </entity-condition>-->
+<!--        </actions>-->
+<!--        <auto-fields-service service-name="updateBusinessBeacon"/>-->
+<!--        &lt;!&ndash;숨긴 항목들&ndash;&gt;-->
+<!--        <field name="beaconTypeId"><hidden/></field>-->
+<!--        <field name="statusId"><hidden/></field>-->
+<!--        <field name="beaconName"><hidden/></field>-->
+<!--        <field name="description"><hidden/></field>-->
+<!--        <field name="longDescription"><hidden/></field>-->
+<!--        <field name="comments" ><hidden/></field>-->
+<!--        <field name="beaconSize" ><hidden/></field>-->
+<!--        <field name="beaconDate" ><hidden/></field>-->
+<!--        <field name="anotherDate" ><hidden/></field>-->
+<!--        <field name="anotherText"><hidden/></field>-->
+<!--        <field name="partyId"><hidden/></field>-->
+<!--        <field name="uuid"><hidden/></field>-->
+<!--        <field name="minorId"><hidden/></field>-->
+<!--        <field name="macAddress"><hidden/></field>-->
+<!--        <field name="transmissionPower"><hidden/></field>-->
+<!--        <field name="broadcastingInterval"><hidden/></field>-->
+
+<!--        <field name="businessId"><hidden/></field>-->
+<!--        <field name="beaconId"><text/></field>-->
+<!--&lt;!&ndash;        <field name="businessBeaconSeqId" title="${uiLabelMap.CommonItem}"><display/></field>&ndash;&gt;-->
+<!--        <field name="majorId" title="${uiLabelMap.majorId}">-->
+<!--            <lookup target-form-name="LookupBeaconName"/>-->
+<!--        </field>-->
+<!--        <field name="deleteLink" title=" " widget-style="buttontext">-->
+<!--            <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteBusinessBeacon" also-hidden="false" confirmation-message="${uiLabelMap.CommonConfirmDelete}" image-location="${iconsLocation}/delete.png">-->
+<!--                <parameter param-name="beaconId"/>-->
+<!--                <parameter param-name="businessBeaconSeqId"/>-->
+<!--            </hyperlink>-->
+<!--        </field>-->
+<!--        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>-->
+<!--    </grid>-->
+
+<!--    <form name="AddBusinessBeacons" type="single" target="updateBusinessBeacon" title="">-->
+<!--        <auto-fields-service service-name="updateBusinessBeacon"/>-->
+<!--        <field name="businessId"><hidden/></field>-->
+<!--        <field name="businessBeaconSeqId"><ignored/>&lt;!&ndash; this will be auto-sequenced &ndash;&gt;</field>-->
+<!--        <field name="majorId" title="${uiLabelMap.majorId}" required-field="true" widget-style="required">-->
+<!--            <lookup target-form-name="LookupBeaconName"/>-->
+<!--        </field>-->
+<!--        <field name="beaconId"><ignored/></field>-->
+<!--        <field name="beaconDate"><hidden/></field>-->
+<!--        <field name="beaconTypeId"><hidden/></field>-->
+<!--        <field name="statusId"><hidden/></field>-->
+<!--        <field name="beaconName"><hidden/></field>-->
+<!--        <field name="description"><hidden/></field>-->
+<!--        <field name="longDescription"><hidden/></field>-->
+<!--        <field name="comments"><hidden/></field>-->
+<!--        <field name="beaconSize"><hidden/></field>-->
+<!--        <field name="anotherDate"><hidden/></field>-->
+<!--        <field name="anotherText"><hidden/></field>-->
+<!--        <field name="partyId"><hidden/></field>-->
+<!--        <field name="uuid"><hidden/></field>-->
+<!--        <field name="minorId"><hidden/></field>-->
+<!--        <field name="macAddress"><hidden/></field>-->
+<!--        <field name="transmissionPower"><hidden/></field>-->
+<!--        <field name="broadcastingInterval"><hidden/></field>-->
+<!--        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button" request-confirmation="true"/></field>-->
+<!--    </form>-->
+
+<!--    <grid name="ListBusinessBeacons2"  list-name="businessBeacons"  target="updateBusinessBeacon">-->
+<!--        <actions>-->
+<!--            <entity-condition entity-name="Beacon">-->
+<!--                <condition-expr field-name="businessId" from-field="businessId"/>-->
+<!--                <order-by field-name="businessId"/>-->
+<!--            </entity-condition>-->
+<!--        </actions>-->
+<!--        <auto-fields-service service-name="updateBusinessBeacon2"/>-->
+<!--        <field name="major2Id" title="${uiLabelMap.major2Id}">-->
+<!--            <lookup target-form-name="LookupBeaconName"/>-->
+<!--        </field>-->
+<!--        <field name="deleteLink" title=" " widget-style="buttontext">-->
+<!--            <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteBusinessBeacon" also-hidden="false" confirmation-message="${uiLabelMap.CommonConfirmDelete}" image-location="${iconsLocation}/delete.png">-->
+<!--                <parameter param-name="beaconId"/>-->
+<!--                <parameter param-name="businessBeaconSeqId"/>-->
+<!--            </hyperlink>-->
+<!--        </field>-->
+<!--        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>-->
+<!--    </grid>-->
+
+<!--    <form name="AddBusinessBeacons2" type="single" target="createBusinessBeacon" title="">-->
+<!--        <auto-fields-service service-name="createBusinessBeacon"/>-->
+<!--        <field name="businessId"><hidden/></field>-->
+<!--        <field name="businessBeaconSeqId"><ignored/>&lt;!&ndash; this will be auto-sequenced &ndash;&gt;</field>-->
+<!--        <field name="major2Id" title="${uiLabelMap.majorId}" required-field="true" widget-style="required">-->
+<!--            <lookup target-form-name="LookupBeaconName"/>-->
+<!--        </field>-->
+
+<!--        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button" request-confirmation="true"/></field>-->
+<!--    </form>-->
+
+
+
+
+
+
+
+
+
+
+    <!-- BusinessFeatureAppl -->
+    <grid name="ListBusinessFeatureAppls"  list-name="businessFeatureAppls"  target="business_updateBusinessFeatureAppl">
+        <actions>
+            <entity-condition entity-name="BusinessFeatureAppl">
+                <condition-expr field-name="businessId" from-field="businessId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateBusinessFeatureAppl"/>
+        <field name="businessId"><hidden/></field>
+        <field name="businessFeatureId" title="${uiLabelMap.BusinessFeature}">
+            <display-entity entity-name="BusinessFeature">
+                <sub-hyperlink target="EditBusinessFeature" description="${businessFeatureId}" link-style="buttontext">
+                    <parameter param-name="businessFeatureId"/>
+                </sub-hyperlink>
+            </display-entity>
+        </field>
+        <field name="fromDate"><display/></field>
+        <field name="businessFeatureApplTypeId" title="${uiLabelMap.CommonType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BusinessFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonUpdate}"><submit button-type="button"/></field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="business_deleteBusinessFeatureAppl" also-hidden="false" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="businessId"/>
+                <parameter param-name="businessFeatureId"/>
+                <parameter param-name="fromDate"/>
+            </hyperlink>
+        </field>
+    </grid>
+
+    <form name="AddBusinessFeatureAppl" type="single" target="business_createBusinessFeatureAppl" title="">
+        <auto-fields-service service-name="createBusinessFeatureAppl"/>
+        <field name="businessId"><hidden/></field>
+        <field name="businessFeatureId" title="${uiLabelMap.BusinessFeature}">
+            <lookup target-form-name="LookupBusinessFeature"/>
+        </field>
+        <field name="businessFeatureApplTypeId" title="${uiLabelMap.CommonType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="BusinessFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="SetBusinessPdfPassword" type="single" target="BusinessReportPdf" title="">
+        <field name="businessId"><hidden/></field>
+        <field name="ownerPassword" title="${uiLabelMap.PDFOwnerPassword}"><text size="15" maxlength="250"/></field>
+        <field name="userPassword" title="${uiLabelMap.PDFUserPassword}"><text size="15" maxlength="250"/></field>
+        <field name="allowPrint" title="${uiLabelMap.PDFAllowPrint}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowCopyContent" title="${uiLabelMap.PDFAllowCopyContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditContent" title="${uiLabelMap.PDFAllowEditContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditAnnotations" title="${uiLabelMap.PDFAllowEditAnnotations}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowFillInForms" title="${uiLabelMap.PDFAllowFillInForms}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAccessContent" title="${uiLabelMap.PDFAllowAccessContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAssembleDocument" title="${uiLabelMap.PDFAllowAssembleDocument}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowPrintHq" title="${uiLabelMap.PDFAllowPrintHq}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encrypt-metadata" title="${uiLabelMap.PDFEncryptMetadata}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encryption-length" title="${uiLabelMap.PDFEncryptionLength}"><text size="15"/></field>
+        <field name="submitButton" title="${uiLabelMap.BusinessGeneratePDF}"><submit button-type="button"/></field>
+    </form>
+
+
+</forms>

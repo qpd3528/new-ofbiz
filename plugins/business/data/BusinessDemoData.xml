@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <BusinessType businessTypeId="SHOP" description="Shop"/>
+    <BusinessType businessTypeId="COM" description="Company"/>
+    <BusinessType businessTypeId="ORG" description="Org" />
+    <BusinessType businessTypeId="EDU" description="Edu"/>
+
+    <AffiliationType affiliationTypeId="association" description="협회"/>
+    <AffiliationType affiliationTypeId="federation" description="연합회"/>
+
+    <BusinessClassificationType businessClassificationTypeId="soleProprietorship" description="개인 사업자"/>
+    <BusinessClassificationType businessClassificationTypeId="corporateBusinessOwner" description="법인 사업자"/>
+
+    <TaxType taxTypeId="general taxpayer" description="일반 과세자"/>
+    <TaxType textTypeId="simplified taxpayer" description="간이 과세자"/>
+
+<!--    <BusinessType businessTypeId="REAL_WORLD" description="Real World"/>-->
+<!--    <BusinessType businessTypeId="MADE_UP" description="Made Up"/>-->
+<!--    <BusinessType businessTypeId="CONTRIVED" description="Contrived" parentTypeId="MADE_UP"/>-->
+<!--    <BusinessType businessTypeId="INSPIRED" description="Inspired" parentTypeId="MADE_UP"/>-->
+
+<!--    <BusinessFeatureApplType businessFeatureApplTypeId="REQUIRED" description="Required"/>-->
+<!--    <BusinessFeatureApplType businessFeatureApplTypeId="DESIRED" description="Desired"/>-->
+<!--    <BusinessFeatureApplType businessFeatureApplTypeId="NOT_ALLOWED" description="Not Allowed"/>-->
+
+    <StatusType description="Business" statusTypeId="BUSINESS_STATUS" hasTable="N"/>
+    <StatusItem description="Activate" sequenceId="01" statusCode="Activate" statusId="BUSINESS_ACTIVATE" statusTypeId="BUSINESS_STATUS"/>
+    <StatusItem description="Deactivate" sequenceId="02" statusCode="Deactivate" statusId="BUSINESS_DEACTIVATE" statusTypeId="BUSINESS_STATUS"/>
+<!--    <StatusItem description="Approved" sequenceId="03" statusCode="APPROVED" statusId="BIZ_APPROVED" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusItem description="Implemented" sequenceId="04" statusCode="IMPLEMENTED" statusId="BIZ_IMPLEMENTED" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusItem description="Tested" sequenceId="05" statusCode="TESTED" statusId="BIZ_TESTED" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusItem description="Complete" sequenceId="06" statusCode="COMPLETE" statusId="BIZ_COMPLETE" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusItem description="Cancelled" sequenceId="99" statusCode="CANCELLED" statusId="BIZ_CANCELLED" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusType description="Business" statusTypeId="BUSINESS_STATUS" hasTable="N"/>-->
+<!--    <StatusItem description="사용 가능" sequenceId="01" statusCode="" statusId="BIZ_IN_DESIGN" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    <StatusItem description="사용 불가" sequenceId="02" statusCode="DEFINED" statusId="BIZ_DEFINED" statusTypeId="BUSINESS_STATUS"/>-->
+<!--    -->
+    <StatusValidChange statusId="BUSINESS_ACTIVATE" statusIdTo="BUSINESS_DEACTIVATE"/>
+    <StatusValidChange statusId="BUSINESS_DEACTIVATE" statusIdTo="BUSINESS_ACTIVATE"/>
+
+<!--    <StatusValidChange statusId="BIZ_APPROVED" statusIdTo="BIZ_IMPLEMENTED" transitionName="Implementation Complete"/>-->
+<!--    <StatusValidChange statusId="BIZ_IMPLEMENTED" statusIdTo="BIZ_TESTED" transitionName="Testing Complete"/>-->
+<!--    <StatusValidChange statusId="BIZ_TESTED" statusIdTo="BIZ_COMPLETE" transitionName="Business Completed"/>-->
+<!--    <StatusValidChange statusId="BIZ_IN_DESIGN" statusIdTo="BIZ_CANCELLED" transitionName="Cancel Business"/>-->
+<!--    <StatusValidChange statusId="BIZ_DEFINED" statusIdTo="BIZ_CANCELLED" transitionName="Cancel Business"/>-->
+<!--    <StatusValidChange statusId="BIZ_APPROVED" statusIdTo="BIZ_CANCELLED" transitionName="Cancel Business"/>-->
+<!--    <StatusValidChange statusId="BIZ_IMPLEMENTED" statusIdTo="BIZ_CANCELLED" transitionName="Cancel Business"/>-->
+<!--    <StatusValidChange statusId="BIZ_TESTED" statusIdTo="BIZ_CANCELLED" transitionName="Cancel Business"/>-->
+
+<!--    <EnumerationType description="Business Feature Source" enumTypeId="EXMPL_FEAT_SOURCE" hasTable="N"/>-->
+<!--    <Enumeration description="Customer" enumCode="CUSTOMER" enumId="EXFTSRC_CUSTOMER" sequenceId="01" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Partner" enumCode="PARTNER" enumId="EXFTSRC_PARTNER" sequenceId="02" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Employee" enumCode="EMPLOYEE" enumId="EXFTSRC_EMPLOYEE" sequenceId="03" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+
+    <Business businessId="EX01" businessName="Business 1" businessTypeId="SHOP" statusId="BUSINESS_ACTIVATE"/>
+    <Business businessId="EX02" businessName="Business 2" businessTypeId="ORG" statusId="BUSINESS_DEACTIVATE"/>
+    <Business businessId="EX03" businessName="Business 3" businessTypeId="COM" statusId="BUSINESS_ACTIVATE"/>
+    <Business businessId="EX04" businessName="Business 4" businessTypeId="SHOP" statusId="BUSINESS_DEACTIVATE"/>
+    <Business businessId="EX05" businessName="Business 5" businessTypeId="COM" statusId="BUSINESS_ACTIVATE"/>
+    <Business businessId="EX06" businessName="Business 6" businessTypeId="COM" statusId="BUSINESS_ACTIVATE"/>
+    <Business businessId="EX07" businessName="Business 7" businessTypeId="SHOP" statusId="BUSINESS_DEACTIVATE"/>
+    <Business businessId="EX08" businessName="Business 8" businessTypeId="ORG" statusId="BUSINESS_DEACTIVATE"/>
+    <Business businessId="EX09" businessName="Business 9" businessTypeId="EDU" statusId="BUSINESS_ACTIVATE"/>
+    <Business businessId="EX10" businessName="Business 10" businessTypeId="SHOP" statusId="BUSINESS_DEACTIVATE"/>
+    <Business businessId="EX11" businessName="Business 11" businessTypeId="COM" statusId="BUSINESS_DEACTIVATE" />
+    <Business businessId="EX12" businessName="Business 12" businessTypeId="EDU" statusId="BUSINESS_ACTIVATE" />
+    <Business businessId="EX11" businessName="Business 11" businessTypeId="COM" statusId="BUSINESS_DEACTIVATE" />
+    <Business businessId="EX12" businessName="Business 12" businessTypeId="EDU" statusId="BUSINESS_ACTIVATE" />
+<!--    <create>-->
+<!--        <Business businessId="EX13" businessName="Business 13" businessTypeId="INSPIRED" statusId="BIZ_IN_DESIGN"/>-->
+<!--        <Business businessId="EX14" businessName="Business 14" businessTypeId="INSPIRED" statusId="BIZ_IN_DESIGN"/>-->
+<!--    </create>-->
+<!--    <create-replace>-->
+<!--        <Business businessId="EX12" businessName="Business 12 after replace" businessTypeId="INSPIRED" statusId="BIZ_IN_DESIGN"/>-->
+<!--    </create-replace>-->
+<!--    <create-update>-->
+<!--        <Business businessId="EX12" businessName="Business 11 after update" businessTypeId="INSPIRED" statusId="BIZ_IN_DESIGN"/>-->
+<!--    </create-update>-->
+<!--    <delete>-->
+<!--        <Business businessId="EX09"/>-->
+<!--    </delete>-->
+<!--    <Business businessId="EX10" businessName="Business 10 after update"/>-->
+
+<!--    <BusinessItem businessId="EX01" businessItemSeqId="00001" description="EX1-001" amount="10"/>-->
+<!--    <BusinessItem businessId="EX01" businessItemSeqId="00002" description="EX1-002" amount="20"/>-->
+<!--    <BusinessItem businessId="EX02" businessItemSeqId="00001" description="EX2-001" amount="10"/>-->
+<!--    <BusinessItem businessId="EX02" businessItemSeqId="00002" description="EX2-002" amount="20"/>-->
+<!--    <BusinessItem businessId="EX02" businessItemSeqId="00003" description="EX2-003" amount="30"/>-->
+
+<!--    <BusinessStatus businessId="EX01" statusDate="2010-01-02 00:00:00" statusEndDate="2011-01-02 00:00:00" statusId="BIZ_IN_DESIGN"/>-->
+<!--    <BusinessStatus businessId="EX01" statusDate="2011-01-02 00:00:01" statusEndDate="2012-01-02 00:00:00" statusId="BIZ_DEFINED"/>-->
+<!--    <BusinessStatus businessId="EX01" statusDate="2012-01-02 00:00:00" statusEndDate="2013-01-02 00:00:00" statusId="BIZ_APPROVED"/>-->
+<!--    <BusinessStatus businessId="EX02" statusDate="2010-01-02 00:00:00" statusEndDate="2011-01-02 00:00:00" statusId="BIZ_IN_DESIGN"/>-->
+<!--    <BusinessStatus businessId="EX02" statusDate="2011-01-02 00:00:01" statusEndDate="2012-01-02 00:00:00" statusId="BIZ_DEFINED"/>-->
+<!--    <BusinessStatus businessId="EX02" statusDate="2012-01-02 00:00:00" statusEndDate="2013-01-02 00:00:00" statusId="BIZ_APPROVED"/>-->
+</entity-engine-xml>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <PortalPortlet portalPortletId="BUSINESS_1" portletName="Business 1" description="Business portlet n. 1"
+        screenName="BusinessPortlet1" screenLocation="component://business/widget/business/PortletScreens.xml"
+        editFormName="BusinessPortlet1Edit" editFormLocation="component://business/widget/business/PortletEditForms.xml"
+        screenshot="/images/ofbiz_logo.png"/>
+
+    <PortalPortlet portalPortletId="BUSINESS_2" portletName="Business 2" description="Business portlet n. 2"
+        screenName="BusinessPortlet2" screenLocation="component://business/widget/business/PortletScreens.xml"
+        editFormName="BusinessPortlet2Edit" editFormLocation="component://business/widget/business/PortletEditForms.xml"
+        screenshot="/images/opentravelsystem_logo.jpg"/>
+
+    <PortalPortlet portalPortletId="BUSINESS_3" portletName="Business 3" description="Business portlet n. 3"
+        screenName="BusinessPortlet3" screenLocation="component://business/widget/business/PortletScreens.xml"
+        editFormName="BusinessPortlet3Edit" editFormLocation="component://business/widget/business/PortletEditForms.xml"/>
+
+    <PortletCategory portletCategoryId="BUSINESS" description="Business Portlet(s)"/>
+    <PortletPortletCategory portalPortletId="BUSINESS_1" portletCategoryId="BUSINESS"/>
+    <PortletPortletCategory portalPortletId="BUSINESS_2" portletCategoryId="BUSINESS"/>
+    <PortletPortletCategory portalPortletId="BUSINESS_3" portletCategoryId="BUSINESS"/>
+</entity-engine-xml>

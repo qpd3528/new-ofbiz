@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+    <!-- The controller elements that are common to all OFBiz components
+         can be found in the following xml file. A component can override the
+         elements found in the common-controller.xml file. -->
+    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
+    <include location="component://common/webcommon/WEB-INF/portal-controller.xml"/>
+    <include location="component://beacon/widget/beacon/BeaconCompoundWidgets.xml"/>
+
+    <description>Beacon Component Site Configuration File</description>
+
+    <!-- Events to run on every request before security (chains exempt) -->
+    <!--
+    <preprocessor>
+    </preprocessor>
+    -->
+    <!-- Events to run on every request after all other processing (chains exempt) -->
+    <!--
+    <postprocessor>
+        <event name="test" type="java" path="org.apache.ofbiz.webapp.event.TestEvent" invoke="test"/>
+    </postprocessor>
+    -->
+
+    <!-- Request Mappings -->
+    <request-map uri="main"><security https="true" auth="true"/><response name="success" type="view" value="main"/></request-map>
+
+    <!-- Beacon Requests -->
+    <request-map uri="FindBeacon"><security https="true" auth="true"/><response name="success" type="view" value="FindBeacon"/></request-map>
+    <request-map uri="EditBeacon"><security https="true" auth="true"/><response name="success" type="view" value="EditBeacon"/></request-map>
+    <request-map uri="EditBeaconLayer"><security https="true" auth="true"/><response name="success" type="view" value="EditBeaconLayer"/></request-map>
+    <request-map uri="BeaconReportHtml"><security https="true" auth="true"/><response name="success" type="view" value="BeaconReportHtml"/></request-map>
+    <request-map uri="BeaconReportXls"><security https="true" auth="true"/><response name="success" type="view" value="BeaconReportXls"/></request-map>
+    <request-map uri="BeaconReportPdf"><security https="true" auth="true"/><response name="success" type="view" value="BeaconReportPdf"/></request-map>
+    <request-map uri="ListBeaconExport"><security https="true" auth="true"/><response name="success" type="view" value="ListBeaconExport"/></request-map>
+    <request-map uri="createBeacon">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeacon"/>
+        <response name="success" type="request-redirect" value="EditBeacon">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="FindBeacon"/>
+    </request-map>
+    <request-map uri="updateBeacon">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeacon"/>
+        <response name="success" type="request-redirect" value="EditBeacon">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeacon"/>
+    </request-map>
+
+    <request-map uri="deleteBeacon">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBeacon"/>
+        <response name="success" type="request-redirect" value="EditBeacon">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeacon"/>
+    </request-map>
+
+
+    <request-map uri="createBeaconAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeacon"/>
+        <response name="success" type="request" value="json"/>
+        <response name="error" type="request" value="json"/>
+    </request-map>
+    <request-map uri="updateBeaconAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeacon"/>
+        <response name="success" type="view" value="findBeaconAjax"/>
+        <response name="error" type="view" value="findBeaconAjax"/>
+    </request-map>
+
+    <request-map uri="EditBeaconItems"><security https="true" auth="true"/><response name="success" type="view" value="EditBeaconItems"/></request-map>
+    <request-map uri="createBeaconItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeaconItem"/>
+        <response name="success" type="request-redirect" value="EditBeaconItems">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconItems"/>
+    </request-map>
+    <request-map uri="updateBeaconItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeaconItem"/>
+        <response name="success" type="request-redirect" value="EditBeaconItems">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconItems"/>
+    </request-map>
+    <request-map uri="deleteBeaconItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBeaconItem"/>
+        <response name="success" type="request-redirect" value="EditBeaconItems">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconItems"/>
+    </request-map>
+
+    <request-map uri="EditBeaconFeatureAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditBeaconFeatureAppls"/></request-map>
+    <request-map uri="beacon_createBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureAppls"/>
+    </request-map>
+    <request-map uri="beacon_updateBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureAppls"/>
+    </request-map>
+    <request-map uri="beacon_deleteBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureAppls"/>
+    </request-map>
+
+    <!-- BeaconFeature Requests -->
+    <request-map uri="FindBeaconFeature"><security https="true" auth="true"/><response name="success" type="view" value="FindBeaconFeature"/></request-map>
+    <request-map uri="EditBeaconFeature"><security https="true" auth="true"/><response name="success" type="view" value="EditBeaconFeature"/></request-map>
+    <request-map uri="createBeaconFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeaconFeature"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeature">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeature"/>
+    </request-map>
+    <request-map uri="updateBeaconFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeaconFeature"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeature">
+            <redirect-parameter name="beaconFeatureId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeature"/>
+    </request-map>
+
+    <request-map uri="EditBeaconFeatureBeaconAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditBeaconFeatureBeaconAppls"/></request-map>
+    <request-map uri="feature_createBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureBeaconAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureBeaconAppls"/>
+    </request-map>
+    <request-map uri="feature_updateBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureBeaconAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureBeaconAppls"/>
+    </request-map>
+    <request-map uri="feature_deleteBeaconFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBeaconFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBeaconFeatureBeaconAppls">
+            <redirect-parameter name="beaconId"/>
+        </response>
+        <response name="error" type="view" value="EditBeaconFeatureBeaconAppls"/>
+    </request-map>
+    <request-map uri="findBeaconFeatures">
+        <security https="true" auth="true"/>
+        <event type="groovy" path="component://beacon/src/main/groovy/org/apache/ofbiz/beacon/FindBeaconFeatures.groovy"/>
+        <response name="success" type="view" value="ajaxAutocompleteOptions"/>
+        <response name="error" type="view" value="ajaxAutocompleteOptions"/>
+    </request-map>
+
+    <request-map uri="FormWidgetBeacons"><security https="true" auth="true"/><response name="success" type="view" value="FormWidgetBeacons"/></request-map>
+
+    <request-map uri="LookupBeaconFeature"><security https="true" auth="true"/><response name="success" type="view" value="LookupBeaconFeature"/></request-map>
+    <request-map uri="LookupPartyGroupByName"><security https="true" auth="true"/><response name="success" type="view" value="LookupPartyGroupByName"/></request-map>
+
+    <request-map uri="ListBeaconFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="ListBeaconFormOnly"/></request-map>
+    <request-map uri="CreateBeaconFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="CreateBeaconFormOnly"/></request-map>
+
+    <request-map uri="printBeaconFOPFonts">
+      <security https="true" auth="true"/>
+      <response name="success" type="view" value="printBeaconFOPFonts"/>
+    </request-map>
+    
+    <request-map uri="fonts.pdf">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="fonts.fo"/>
+    </request-map>
+
+    <request-map uri="views">
+        <security https="true" auth="false"/>
+        <response name="success" type="request" value="main"/>
+    </request-map>
+
+    <request-map uri="BeaconGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="BeaconGeoLocationPointSet1"/></request-map>
+    <request-map uri="BeaconGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="BeaconGeoLocationPointSet2"/></request-map>
+    <request-map uri="BeaconGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="BeaconGeoLocationPointSet3"/></request-map>
+    <request-map uri="BeaconGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="BeaconGeoLocationPointSet4"/></request-map>
+    <request-map uri="BeaconGeoLocationAddress"><security https="true" auth="true"/><response name="success" type="view" value="BeaconGeoLocationAddress"/></request-map>
+    <request-map uri="BeaconOsmGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="BeaconOsmGeoLocationPointSet1"/></request-map>
+    <request-map uri="BeaconOsmGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="BeaconOsmGeoLocationPointSet2"/></request-map>
+    <request-map uri="BeaconOsmGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="BeaconOsmGeoLocationPointSet3"/></request-map>
+    <request-map uri="BeaconOsmGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="BeaconOsmGeoLocationPointSet4"/></request-map>
+    
+    <!--flot beacon requests-->
+    <request-map uri="BeaconBarChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BeaconBarChart"/>
+    </request-map>
+    <request-map uri="BeaconPieChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BeaconPieChart"/>
+    </request-map>
+    
+    <!-- Pdf Report Options -->
+    <request-map uri="BeaconReportPdfOptions">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BeaconReportPdfOptions"/>
+    </request-map>
+    
+    <!-- Barcode/QRCode beacon requests -->
+    <request-map uri="BeaconReportPdfBarcode">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BeaconReportPdfBarcode"/>
+    </request-map>
+
+    <!-- React beacon requests -->
+    <request-map uri="ReactBeacon">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BeaconReact"/>
+    </request-map>
+
+    <!-- ================ 비콘 검색 창에서 비즈니스이름 검색 ================= -->
+    <request-map uri="LookupBusinessName"><security auth="true" https="true"/><response name="success" type="view" value="LookupBusinessName"/></request-map>
+    <view-map name="LookupBusinessName" type="screen" page="component://business/widget/business/LookupScreens.xml#LookupBusinessName"/>
+    <!-- end of request mappings -->
+
+    <!-- View Mappings -->
+    <view-map name="main" type="screen" page="component://beacon/widget/beacon/CommonScreens.xml#main"/>
+
+    <view-map name="FindBeacon" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#FindBeacon"/>
+    <view-map name="EditBeacon" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#EditBeacon"/>
+    <view-map name="EditBeaconLayer" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#EditBeaconLayer"/>
+    <view-map name="EditBeaconItems" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#EditBeaconItems"/>
+    <view-map name="EditBeaconFeatureAppls" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#EditBeaconFeatureAppls"/>
+    <view-map name="ListBeaconExport" type="screenxls" page="component://beacon/widget/beacon/BeaconScreens.xml#ListBeaconExport" content-type="application/vnd.ms-excel"/>
+    <view-map name="BeaconReportHtml" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconReport"/>
+    <view-map name="BeaconReportXls" type="screenxls" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconReport" content-type="application/vnd.ms-excel"/>
+    <view-map name="BeaconReportPdf" type="screenfop" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconReport" content-type="application/pdf" encoding="none"/>
+    <view-map name="BeaconReportPdfBarcode" type="screenfop" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconReportPdfBarcode" content-type="application/pdf" encoding="none"/>
+
+    <view-map name="FindBeaconFeature" type="screen" page="component://beacon/widget/beacon/BeaconFeatureScreens.xml#FindBeaconFeature"/>
+    <view-map name="EditBeaconFeature" type="screen" page="component://beacon/widget/beacon/BeaconFeatureScreens.xml#EditBeaconFeature"/>
+    <view-map name="EditBeaconFeatureBeaconAppls" type="screen" page="component://beacon/widget/beacon/BeaconFeatureScreens.xml#EditBeaconFeatureBeaconAppls"/>
+
+    <view-map name="FormWidgetBeacons" type="screen" page="component://beacon/widget/beacon/FormWidgetBeaconScreens.xml#FormWidgetBeacons"/>
+
+    <view-map name="LookupBeaconFeature" type="screen" page="component://beacon/widget/beacon/BeaconFeatureScreens.xml#LookupBeaconFeature"/>
+    <view-map name="LookupPartyGroupByName" type="screen" page="component://beacon/widget/beacon/FormWidgetBeaconLookupScreens.xml#LookupPartyGroupByName"/>
+
+    <!-- ajax view mappings -->
+    <view-map name="findBeaconAjax" type="screen" page="component://beacon/widget/beacon/BeaconAjaxScreens.xml#AjaxBeacon"/>
+    <view-map name="ListBeaconFormOnly" type="screen" page="component://beacon/widget/beacon/BeaconAjaxScreens.xml#ListBeaconFormOnly"/>
+    <view-map name="CreateBeaconFormOnly" type="screen" page="component://beacon/widget/beacon/BeaconAjaxScreens.xml#CreateBeaconFormOnly"/>
+    <view-map name="printBeaconFOPFonts" type="screenfop" page="component://beacon/widget/beacon/FormWidgetBeaconScreens.xml#printBeaconFOPFonts" content-type="application/pdf"  encoding="none"/>
+
+    <view-map name="BeaconGeoLocationPointSet1" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconGeoLocationPointSet1"/>
+    <view-map name="BeaconGeoLocationPointSet2" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconGeoLocationPointSet2"/>
+    <view-map name="BeaconGeoLocationPointSet3" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconGeoLocationPointSet3"/>
+    <view-map name="BeaconGeoLocationPointSet4" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconGeoLocationPointSet4"/>
+    <view-map name="BeaconGeoLocationAddress" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconGeoLocationAddress"/>
+    <view-map name="BeaconOsmGeoLocationPointSet1" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconOsmGeoLocationPointSet1"/>
+    <view-map name="BeaconOsmGeoLocationPointSet2" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconOsmGeoLocationPointSet2"/>
+    <view-map name="BeaconOsmGeoLocationPointSet3" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconOsmGeoLocationPointSet3"/>
+    <view-map name="BeaconOsmGeoLocationPointSet4" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconOsmGeoLocationPointSet4"/>
+
+    <!-- Flot view mapping -->
+    <view-map name="BeaconBarChart" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconBarChart"/>
+    <view-map name="BeaconPieChart" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconPieChart"/>
+    
+    <!--  content FOP beacon -->
+    <view-map name="fonts.fo" type="screenfop" page="component://content/widget/CommonScreens.xml#fonts.fo" content-type="application/pdf" encoding="none"/>
+
+    <!-- Supported Content Types -->
+    <!--
+        text/html
+        application/pdf
+        application/postscript
+        application/vnd.ms-excel
+        application/vnd.ms-word
+        application/vnd.ms-powerpoint
+        application/vnd.oasis.opendocument.text
+        application/vnd.oasis.opendocument.spreadsheet
+        application/vnd.oasis.opendocument.presentation
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        application/vnd.openxmlformats-officedocument.presentationml.presentation
+     -->
+
+    <view-map name="BeaconReportPdfOptions" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#BeaconReportPdfOptions"/>
+
+    <!-- React view mapping -->
+    <view-map name="BeaconReact" type="screen" page="component://beacon/widget/beacon/BeaconReactScreens.xml#ReactBeacon"/>
+
+    <!-- end of view mappings -->
+
+
+    <view-map name="LookupPartyName" type="screen" page="component://party/widget/partymgr/LookupScreens.xml#LookupPartyName"/>
+</site-conf>

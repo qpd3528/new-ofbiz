@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+    <!-- The controller elements that are common to all OFBiz components
+         can be found in the following xml file. A component can override the
+         elements found in the common-controller.xml file. -->
+    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
+    <include location="component://common/webcommon/WEB-INF/portal-controller.xml"/>
+    <include location="component://business/widget/business/BusinessCompoundWidgets.xml"/>
+
+    <description>Business Component Site Configuration File</description>
+
+    <!-- Events to run on every request before security (chains exempt) -->
+    <!--
+    <preprocessor>
+    </preprocessor>
+    -->
+    <!-- Events to run on every request after all other processing (chains exempt) -->
+    <!--
+    <postprocessor>
+        <event name="test" type="java" path="org.apache.ofbiz.webapp.event.TestEvent" invoke="test"/>
+    </postprocessor>
+    -->
+
+    <!-- Request Mappings -->
+    <request-map uri="main"><security https="true" auth="true"/><response name="success" type="view" value="main"/></request-map>
+
+    <!-- Business Requests -->
+    <request-map uri="FindBusiness"><security https="true" auth="true"/><response name="success" type="view" value="FindBusiness"/></request-map>
+    <request-map uri="EditBusiness"><security https="true" auth="true"/><response name="success" type="view" value="EditBusiness"/></request-map>
+    <request-map uri="EditBusinessLayer"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessLayer"/></request-map>
+    <request-map uri="BusinessReportHtml"><security https="true" auth="true"/><response name="success" type="view" value="BusinessReportHtml"/></request-map>
+    <request-map uri="BusinessReportXls"><security https="true" auth="true"/><response name="success" type="view" value="BusinessReportXls"/></request-map>
+    <request-map uri="BusinessReportPdf"><security https="true" auth="true"/><response name="success" type="view" value="BusinessReportPdf"/></request-map>
+    <request-map uri="ListBusinessExport"><security https="true" auth="true"/><response name="success" type="view" value="ListBusinessExport"/></request-map>
+    <request-map uri="createBusiness">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusiness"/>
+        <response name="success" type="request-redirect" value="EditBusiness">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="FindBusiness"/>
+    </request-map>
+    <request-map uri="updateBusiness">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusiness"/>
+        <response name="success" type="request-redirect" value="EditBusiness">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusiness"/>
+    </request-map>
+    <request-map uri="deleteBusiness">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBusiness"/>
+        <response name="success" type="request-redirect" value="EditBusiness">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusiness"/>
+    </request-map>
+    <request-map uri="deleteBusinessStatus">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBusinessStatus"/>
+        <response name="success" type="request-redirect" value="EditBusiness">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusiness"/>
+    </request-map>
+    <request-map uri="createBusinessAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusiness"/>
+        <response name="success" type="request" value="json"/>
+        <response name="error" type="request" value="json"/>
+    </request-map>
+    <request-map uri="updateBusinessAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusiness"/>
+        <response name="success" type="view" value="findBusinessAjax"/>
+        <response name="error" type="view" value="findBusinessAjax"/>
+    </request-map>
+
+    <request-map uri="EditBusinessItems"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessItems"/></request-map>
+    <request-map uri="createBusinessItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusinessItem"/>
+        <response name="success" type="request-redirect" value="EditBusinessItems">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessItems"/>
+    </request-map>
+
+    <request-map uri="updateBusinessItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusinessItem"/>
+        <response name="success" type="request-redirect" value="EditBusinessItems">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessItems"/>
+    </request-map>
+
+    <request-map uri="deleteBusinessItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBusinessItem"/>
+        <response name="success" type="request-redirect" value="EditBusinessItems">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessItems"/>
+    </request-map>
+
+<!--    <request-map uri="EditBusinessBeacons"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessBeacons"/></request-map>-->
+
+<!--    <request-map uri="createBusinessBeacon">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="createBusinessBeacon"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons"/>-->
+<!--    </request-map>-->
+
+<!--    <request-map uri="updateBusinessBeacon">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="updateBusinessBeacon"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons"/>-->
+<!--    </request-map>-->
+
+<!--    <request-map uri="deleteBusinessBeacon">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="deleteBusinessBeacon"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons"/>-->
+<!--    </request-map>-->
+
+<!--    <request-map uri="EditBusinessBeacons2"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessBeacons2"/></request-map>-->
+
+<!--    <request-map uri="createBusinessBeacon2">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="createBusinessBeacon"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons2">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons2"/>-->
+<!--    </request-map>-->
+
+<!--    <request-map uri="updateBusinessBeacon2">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="updateBusinessBeacon"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons2">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons2"/>-->
+<!--    </request-map>-->
+
+<!--    <request-map uri="deleteBusinessBeacon2">-->
+<!--        <security https="true" auth="true"/>-->
+<!--        <event type="service" invoke="deleteBusinessBeacon2"/>-->
+<!--        <response name="success" type="request-redirect" value="EditBusinessBeacons2">-->
+<!--            <redirect-parameter name="businessId"/>-->
+<!--        </response>-->
+<!--        <response name="error" type="view" value="EditBusinessBeacons2"/>-->
+<!--    </request-map>-->
+
+
+
+
+    <request-map uri="EditBusinessFeatureAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessFeatureAppls"/></request-map>
+    <request-map uri="business_createBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureAppls"/>
+    </request-map>
+    <request-map uri="business_updateBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureAppls"/>
+    </request-map>
+    <request-map uri="business_deleteBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureAppls"/>
+    </request-map>
+
+    <!-- BusinessFeature Requests -->
+    <request-map uri="FindBusinessFeature"><security https="true" auth="true"/><response name="success" type="view" value="FindBusinessFeature"/></request-map>
+    <request-map uri="EditBusinessFeature"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessFeature"/></request-map>
+    <request-map uri="createBusinessFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusinessFeature"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeature">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeature"/>
+    </request-map>
+    <request-map uri="updateBusinessFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusinessFeature"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeature">
+            <redirect-parameter name="businessFeatureId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeature"/>
+    </request-map>
+
+    <request-map uri="EditBusinessFeatureBusinessAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditBusinessFeatureBusinessAppls"/></request-map>
+    <request-map uri="feature_createBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureBusinessAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureBusinessAppls"/>
+    </request-map>
+    <request-map uri="feature_updateBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureBusinessAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureBusinessAppls"/>
+    </request-map>
+    <request-map uri="feature_deleteBusinessFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteBusinessFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditBusinessFeatureBusinessAppls">
+            <redirect-parameter name="businessId"/>
+        </response>
+        <response name="error" type="view" value="EditBusinessFeatureBusinessAppls"/>
+    </request-map>
+    <request-map uri="findBusinessFeatures">
+        <security https="true" auth="true"/>
+        <event type="groovy" path="component://business/src/main/groovy/org/apache/ofbiz/business/FindBusinessFeatures.groovy"/>
+        <response name="success" type="view" value="ajaxAutocompleteOptions"/>
+        <response name="error" type="view" value="ajaxAutocompleteOptions"/>
+    </request-map>
+
+    <request-map uri="FormWidgetBusinesss"><security https="true" auth="true"/><response name="success" type="view" value="FormWidgetBusinesss"/></request-map>
+
+    <request-map uri="LookupBusinessFeature"><security https="true" auth="true"/><response name="success" type="view" value="LookupBusinessFeature"/></request-map>
+    <request-map uri="LookupPartyGroupByName"><security https="true" auth="true"/><response name="success" type="view" value="LookupPartyGroupByName"/></request-map>
+
+    <request-map uri="ListBusinessFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="ListBusinessFormOnly"/></request-map>
+    <request-map uri="CreateBusinessFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="CreateBusinessFormOnly"/></request-map>
+
+    <request-map uri="printBusinessFOPFonts">
+      <security https="true" auth="true"/>
+      <response name="success" type="view" value="printBusinessFOPFonts"/>
+    </request-map>
+    
+    <request-map uri="fonts.pdf">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="fonts.fo"/>
+    </request-map>
+
+    <request-map uri="views">
+        <security https="true" auth="false"/>
+        <response name="success" type="request" value="main"/>
+    </request-map>
+
+    <request-map uri="BusinessGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="BusinessGeoLocationPointSet1"/></request-map>
+    <request-map uri="BusinessGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="BusinessGeoLocationPointSet2"/></request-map>
+    <request-map uri="BusinessGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="BusinessGeoLocationPointSet3"/></request-map>
+    <request-map uri="BusinessGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="BusinessGeoLocationPointSet4"/></request-map>
+    <request-map uri="BusinessGeoLocationAddress"><security https="true" auth="true"/><response name="success" type="view" value="BusinessGeoLocationAddress"/></request-map>
+    <request-map uri="BusinessOsmGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="BusinessOsmGeoLocationPointSet1"/></request-map>
+    <request-map uri="BusinessOsmGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="BusinessOsmGeoLocationPointSet2"/></request-map>
+    <request-map uri="BusinessOsmGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="BusinessOsmGeoLocationPointSet3"/></request-map>
+    <request-map uri="BusinessOsmGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="BusinessOsmGeoLocationPointSet4"/></request-map>
+    
+    <!--flot business requests-->
+    <request-map uri="BusinessBarChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BusinessBarChart"/>
+    </request-map>
+    <request-map uri="BusinessPieChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BusinessPieChart"/>
+    </request-map>
+    
+    <!-- Pdf Report Options -->
+    <request-map uri="BusinessReportPdfOptions">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BusinessReportPdfOptions"/>
+    </request-map>
+    
+    <!-- Barcode/QRCode business requests -->
+    <request-map uri="BusinessReportPdfBarcode">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BusinessReportPdfBarcode"/>
+    </request-map>
+
+    <!-- React business requests -->
+    <request-map uri="ReactBusiness">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="BusinessReact"/>
+    </request-map>
+
+    <!-- ================ 업체 검색 창에서 비콘 검색 ================= -->
+    <request-map uri="LookupBeaconName"><security auth="true" https="true"/><response name="success" type="view" value="LookupBeaconName"/></request-map>
+    <request-map uri="FindBeacon"><security https="true" auth="true"/><response name="success" type="view" value="FindBeacon"/></request-map>
+
+    <view-map name="LookupBeaconName" type="screen" page="component://beacon/widget/beacon/LookupScreen.xml#LookupBeaconName"/>
+    <view-map name="FindBeacon" type="screen" page="component://beacon/widget/beacon/BeaconScreens.xml#FindBeacon"/>
+    <!-- end of request mappings -->
+
+    <!-- View Mappings -->
+    <view-map name="main" type="screen" page="component://business/widget/business/CommonScreens.xml#main"/>
+
+    <view-map name="FindBusiness" type="screen" page="component://business/widget/business/BusinessScreens.xml#FindBusiness"/>
+    <view-map name="EditBusiness" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusiness"/>
+    <view-map name="EditBusinessLayer" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusinessLayer"/>
+    <view-map name="EditBusinessItems" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusinessItems"/>
+    <view-map name="EditBusinessBeacons" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusinessBeacons"/>
+    <view-map name="EditBusinessBeacons2" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusinessBeacons2"/>
+    <view-map name="EditBusinessFeatureAppls" type="screen" page="component://business/widget/business/BusinessScreens.xml#EditBusinessFeatureAppls"/>
+    <view-map name="ListBusinessExport" type="screenxls" page="component://business/widget/business/BusinessScreens.xml#ListBusinessExport" content-type="application/vnd.ms-excel"/>
+    <view-map name="BusinessReportHtml" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessReport"/>
+    <view-map name="BusinessReportXls" type="screenxls" page="component://business/widget/business/BusinessScreens.xml#BusinessReport" content-type="application/vnd.ms-excel"/>
+    <view-map name="BusinessReportPdf" type="screenfop" page="component://business/widget/business/BusinessScreens.xml#BusinessReport" content-type="application/pdf" encoding="none"/>
+    <view-map name="BusinessReportPdfBarcode" type="screenfop" page="component://business/widget/business/BusinessScreens.xml#BusinessReportPdfBarcode" content-type="application/pdf" encoding="none"/>
+
+    <view-map name="FindBusinessFeature" type="screen" page="component://business/widget/business/BusinessFeatureScreens.xml#FindBusinessFeature"/>
+    <view-map name="EditBusinessFeature" type="screen" page="component://business/widget/business/BusinessFeatureScreens.xml#EditBusinessFeature"/>
+    <view-map name="EditBusinessFeatureBusinessAppls" type="screen" page="component://business/widget/business/BusinessFeatureScreens.xml#EditBusinessFeatureBusinessAppls"/>
+
+    <view-map name="FormWidgetBusinesss" type="screen" page="component://business/widget/business/FormWidgetBusinessScreens.xml#FormWidgetBusinesss"/>
+
+    <view-map name="LookupBusinessFeature" type="screen" page="component://business/widget/business/BusinessFeatureScreens.xml#LookupBusinessFeature"/>
+    <view-map name="LookupPartyGroupByName" type="screen" page="component://business/widget/business/FormWidgetBusinessLookupScreens.xml#LookupPartyGroupByName"/>
+
+    <!-- ajax view mappings -->
+    <view-map name="findBusinessAjax" type="screen" page="component://business/widget/business/BusinessAjaxScreens.xml#AjaxBusiness"/>
+    <view-map name="ListBusinessFormOnly" type="screen" page="component://business/widget/business/BusinessAjaxScreens.xml#ListBusinessFormOnly"/>
+    <view-map name="CreateBusinessFormOnly" type="screen" page="component://business/widget/business/BusinessAjaxScreens.xml#CreateBusinessFormOnly"/>
+    <view-map name="printBusinessFOPFonts" type="screenfop" page="component://business/widget/business/FormWidgetBusinessScreens.xml#printBusinessFOPFonts" content-type="application/pdf"  encoding="none"/>
+
+    <view-map name="BusinessGeoLocationPointSet1" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessGeoLocationPointSet1"/>
+    <view-map name="BusinessGeoLocationPointSet2" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessGeoLocationPointSet2"/>
+    <view-map name="BusinessGeoLocationPointSet3" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessGeoLocationPointSet3"/>
+    <view-map name="BusinessGeoLocationPointSet4" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessGeoLocationPointSet4"/>
+    <view-map name="BusinessGeoLocationAddress" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessGeoLocationAddress"/>
+    <view-map name="BusinessOsmGeoLocationPointSet1" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessOsmGeoLocationPointSet1"/>
+    <view-map name="BusinessOsmGeoLocationPointSet2" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessOsmGeoLocationPointSet2"/>
+    <view-map name="BusinessOsmGeoLocationPointSet3" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessOsmGeoLocationPointSet3"/>
+    <view-map name="BusinessOsmGeoLocationPointSet4" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessOsmGeoLocationPointSet4"/>
+
+
+    <!-- Flot view mapping -->
+    <view-map name="BusinessBarChart" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessBarChart"/>
+    <view-map name="BusinessPieChart" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessPieChart"/>
+    
+    <!--  content FOP business -->
+    <view-map name="fonts.fo" type="screenfop" page="component://content/widget/CommonScreens.xml#fonts.fo" content-type="application/pdf" encoding="none"/>
+
+    <!-- Supported Content Types -->
+    <!--
+        text/html
+        application/pdf
+        application/postscript
+        application/vnd.ms-excel
+        application/vnd.ms-word
+        application/vnd.ms-powerpoint
+        application/vnd.oasis.opendocument.text
+        application/vnd.oasis.opendocument.spreadsheet
+        application/vnd.oasis.opendocument.presentation
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        application/vnd.openxmlformats-officedocument.presentationml.presentation
+     -->
+
+    <view-map name="BusinessReportPdfOptions" type="screen" page="component://business/widget/business/BusinessScreens.xml#BusinessReportPdfOptions"/>
+
+    <!-- React view mapping -->
+    <view-map name="BusinessReact" type="screen" page="component://business/widget/business/BusinessReactScreens.xml#ReactBusiness"/>
+
+    <!-- end of view mappings -->
+</site-conf>

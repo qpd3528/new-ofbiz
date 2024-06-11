@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Talk Services</description>
+    <vendor>OFBiz</vendor>
+    <version>1.0</version>
+
+    <!-- Talk & Related Services -->
+    <service name="createTalk" default-entity-name="Talk" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Talk</description>
+        <permission-service service-name="talkGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="talkTypeId" optional="false"/>
+        <override name="statusId" optional="false"/>
+        <override name="mediaTypeId" optional="false"/>
+        <override name="talkName" optional="false"/>
+        <override name="useTalk" optional="false"/>
+        <override name="maxMember" optional="false"/>
+        <override name="maxSpeakingMember" optional="false"/>
+        <override name="viewSubtitle" optional="false"/>
+        <override name="viewStt" optional="false"/>
+        <override name="readSubtitle" optional="false"/>
+        <override name="actualSound" optional="false"/>
+        <override name="clearSound" optional="false"/>
+        <override name="removeNoise" optional="false"/>
+        <override name="recognizeSpeaker" optional="false"/>
+        <override name="inputVoiceSize" optional="false"/>
+    </service>
+    <service name="updateTalk" default-entity-name="Talk" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Talk</description>
+        <permission-service service-name="talkGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="OUT" optional="false"/>
+    </service>
+    <service name="deleteTalk" default-entity-name="Talk" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a Talk</description>
+        <permission-service service-name="talkGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="getTalkSetting" engine="java" auth="true" location="org.apache.ofbiz.talk.TalkServices" invoke="getTalkSetting">
+        <description>톡 정보 불러오기</description>
+        <attribute name="talkId" type="String" optional="false" mode="IN"/>
+        <attribute name="list" type="List" optional="true" mode="OUT"/>
+    </service>
+    <service name="createTalkStatus" default-entity-name="TalkStatus" engine="simple"
+            location="component://talk/minilang/talk/TalkServices.xml" invoke="createTalkStatus" auth="true">
+        <description>Create a TalkStatus</description>
+        <permission-service service-name="talkGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="all" mode="IN" optional="false">
+            <exclude field-name="statusDate"/>
+            <exclude field-name="statusEndDate"/>
+            <exclude field-name="changeByUserLoginId"/>
+        </auto-attributes>
+    </service>
+
+
+    <service name="createTalkItem" default-entity-name="TalkItem" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a TalkItem</description>
+        <permission-service service-name="talkGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="talkItemSeqId" mode="OUT"/> <!-- make this OUT rather than IN, we will automatically generate the next sub-sequence ID -->
+        <override name="description" optional="false"/>
+    </service>
+    <service name="updateTalkItem" default-entity-name="TalkItem" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a TalkItem</description>
+        <permission-service service-name="talkGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteTalkItem" default-entity-name="TalkItem" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a TalkItem</description>
+        <permission-service service-name="talkGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- TalkFeature Services -->
+    <service name="createTalkFeature" default-entity-name="TalkFeature" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a TalkFeature</description>
+        <permission-service service-name="talkGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="description" optional="false"/>
+    </service>
+    <service name="updateTalkFeature" default-entity-name="TalkFeature" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a TalkFeature</description>
+        <permission-service service-name="talkGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteTalkFeature" default-entity-name="TalkFeature" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a TalkFeature</description>
+        <permission-service service-name="talkGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="createTalkFeatureAppl" default-entity-name="TalkFeatureAppl" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a TalkFeatureAppl</description>
+        <permission-service service-name="talkGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fromDate" optional="true"/>
+    </service>
+    <service name="updateTalkFeatureAppl" default-entity-name="TalkFeatureAppl" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a TalkFeatureAppl</description>
+        <permission-service service-name="talkGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteTalkFeatureAppl" default-entity-name="TalkFeatureAppl" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a TalkFeatureAppl</description>
+        <permission-service service-name="talkGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- Permission Services -->
+    <service name="talkGenericPermission" engine="simple"
+             location="component://talk/minilang/TalkPermissionServices.xml" invoke="talkGenericPermission">
+        <implements service="permissionInterface"/>
+    </service>
+
+    <!-- Talk ServiceTest Service -->
+    <service name="testCreateTalkService" engine="simple"
+             location="component://talk/minilang/talk/TalkServices.xml" invoke="testCreateTalkService">
+        <implements service="testServiceInterface"/>
+    </service>
+    <!-- Send push notification service -->
+    <service name="sendTalkPushNotifications" engine="java"
+                location="org.apache.ofbiz.talk.TalkServices" invoke="sendTalkPushNotifications" auth="true">
+        <attribute name="talkId" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="message" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="successMessage" mode="IN" type="String" optional="true"></attribute>
+    </service>
+
+    <!-- TalkType services -->
+    <service name="createTalkType" default-entity-name="TalkType" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a record of TalkType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateTalkType" default-entity-name="TalkType" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a record of TalkType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteTalkType" default-entity-name="TalkType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a record of TalkType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- TalkFeatureApplType services -->
+    <service name="createTalkFeatureApplType" default-entity-name="TalkFeatureApplType" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a TalkFeatureApplType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateTalkFeatureApplType" default-entity-name="TalkFeatureApplType" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a TalkFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteTalkFeatureApplType" default-entity-name="TalkFeatureApplType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a TalkFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+</services>

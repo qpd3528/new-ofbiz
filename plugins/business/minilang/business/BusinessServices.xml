@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<simple-methods xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Simple-Method" xsi:schemaLocation="http://ofbiz.apache.org/Simple-Method http://ofbiz.apache.org/dtds/simple-methods.xsd">
+    <!-- BusinessStatus methods -->
+    <simple-method method-name="createBusinessStatus" short-description="create a BusinessItem">
+        <now-timestamp field="nowTimestamp"/>
+
+        <!-- find the most recent status record and set the statusEndDate -->
+        <entity-and entity-name="BusinessStatus" list="oldBusinessStatusList">
+            <field-map field-name="businessId" from-field="parameters.businessId"/>
+            <order-by field-name="-statusDate"/>
+        </entity-and>
+        <first-from-list list="oldBusinessStatusList" entry="oldBusinessStatus"/>
+        <if-not-empty field="oldBusinessStatus">
+            <set field="oldBusinessStatus.statusEndDate" from-field="nowTimestamp"/>
+            <store-value value-field="oldBusinessStatus"/>
+        </if-not-empty>
+
+        <make-value entity-name="BusinessStatus" value-field="newEntity"/>
+        <set-pk-fields map="parameters" value-field="newEntity"/>
+        <set-nonpk-fields map="parameters" value-field="newEntity"/>
+        <set field="newEntity.statusDate" from-field="nowTimestamp"/>
+        <set field="newEntity.changeByUserLoginId" from-field="userLogin.userLoginId"/>
+        <create-value value-field="newEntity"/>
+    </simple-method>
+
+    <!-- Business ServiceTest Service -->
+    <simple-method method-name="testCreateBusinessService" short-description="test the create business service" login-required="false">
+        <set field="createBusinessMap.businessTypeId" value="CONTRIVED"/>
+        <set field="createBusinessMap.businessName" value="Test Business"/>
+        <set field="createBusinessMap.statusId" value="EXST_IN_DESIGN"/>
+
+        <entity-one entity-name="UserLogin" value-field="createBusinessMap.userLogin" auto-field-map="false">
+            <field-map field-name="userLoginId" value="system"/>
+        </entity-one>
+
+        <call-service service-name="createBusiness" in-map-name="createBusinessMap">
+            <result-to-field result-name="businessId" field="businessId"/>
+        </call-service>
+
+        <entity-one entity-name="Business" value-field="business"/>
+
+        <assert>
+            <not><if-empty field="business"/></not>
+            <if-compare-field field="business.businessTypeId" to-field="createBusinessMap.businessTypeId" operator="equals"/>
+            <if-compare-field field="business.businessName" to-field="createBusinessMap.businessName" operator="equals"/>
+            <if-compare-field field="business.statusId" to-field="createBusinessMap.statusId" operator="equals"/>
+        </assert>
+
+        <check-errors/>
+    </simple-method>
+</simple-methods>

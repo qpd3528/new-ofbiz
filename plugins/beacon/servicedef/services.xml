@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Beacon Services</description>
+    <vendor>OFBiz</vendor>
+    <version>1.0</version>
+
+    <!-- Beacon & Related Services -->
+    <service name="createBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a Beacon</description>
+        <permission-service service-name="beaconGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="beaconTypeId" optional="false"/>
+        <override name="statusId" optional="false"/>
+<!--        <override name="beaconName" optional="false"/>-->
+    </service>
+    <service name="updateBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a Beacon</description>
+        <permission-service service-name="beaconGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="OUT" optional="false"/>
+    </service>
+    <service name="deleteBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a Beacon</description>
+        <permission-service service-name="beaconGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="createBeaconStatus" default-entity-name="BeaconStatus" engine="simple"
+            location="component://beacon/minilang/beacon/BeaconServices.xml" invoke="createBeaconStatus" auth="true">
+        <description>Create a BeaconStatus</description>
+        <permission-service service-name="beaconGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="all" mode="IN" optional="false">
+            <exclude field-name="statusDate"/>
+            <exclude field-name="statusEndDate"/>
+            <exclude field-name="changeByUserLoginId"/>
+        </auto-attributes>
+    </service>
+
+    <service name="createBeaconItem" default-entity-name="BeaconItem" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BeaconItem</description>
+        <permission-service service-name="beaconGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="beaconItemSeqId" mode="OUT"/> <!-- make this OUT rather than IN, we will automatically generate the next sub-sequence ID -->
+        <override name="description" optional="false"/>
+    </service>
+    <service name="updateBeaconItem" default-entity-name="BeaconItem" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BeaconItem</description>
+        <permission-service service-name="beaconGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBeaconItem" default-entity-name="BeaconItem" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BeaconItem</description>
+        <permission-service service-name="beaconGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- BeaconFeature Services -->
+    <service name="createBeaconFeature" default-entity-name="BeaconFeature" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BeaconFeature</description>
+        <permission-service service-name="beaconGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="description" optional="false"/>
+    </service>
+    <service name="updateBeaconFeature" default-entity-name="BeaconFeature" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BeaconFeature</description>
+        <permission-service service-name="beaconGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBeaconFeature" default-entity-name="BeaconFeature" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BeaconFeature</description>
+        <permission-service service-name="beaconGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="createBeaconFeatureAppl" default-entity-name="BeaconFeatureAppl" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BeaconFeatureAppl</description>
+        <permission-service service-name="beaconGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fromDate" optional="true"/>
+    </service>
+    <service name="updateBeaconFeatureAppl" default-entity-name="BeaconFeatureAppl" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BeaconFeatureAppl</description>
+        <permission-service service-name="beaconGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBeaconFeatureAppl" default-entity-name="BeaconFeatureAppl" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BeaconFeatureAppl</description>
+        <permission-service service-name="beaconGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- Permission Services -->
+    <service name="beaconGenericPermission" engine="simple"
+             location="component://beacon/minilang/BeaconPermissionServices.xml" invoke="beaconGenericPermission">
+        <implements service="permissionInterface"/>
+    </service>
+
+    <!-- Beacon ServiceTest Service -->
+    <service name="testCreateBeaconService" engine="simple"
+             location="component://beacon/minilang/beacon/BeaconServices.xml" invoke="testCreateBeaconService">
+        <implements service="testServiceInterface"/>
+    </service>
+    <!-- Send push notification service -->
+    <service name="sendBeaconPushNotifications" engine="java"
+                location="org.apache.ofbiz.beacon.BeaconServices" invoke="sendBeaconPushNotifications" auth="true">
+        <attribute name="beaconId" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="message" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="successMessage" mode="IN" type="String" optional="true"></attribute>
+    </service>
+
+    <!-- BeaconType services -->
+    <service name="createBeaconType" default-entity-name="BeaconType" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a record of BeaconType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateBeaconType" default-entity-name="BeaconType" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a record of BeaconType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBeaconType" default-entity-name="BeaconType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a record of BeaconType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- BeaconFeatureApplType services -->
+    <service name="createBeaconFeatureApplType" default-entity-name="BeaconFeatureApplType" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BeaconFeatureApplType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateBeaconFeatureApplType" default-entity-name="BeaconFeatureApplType" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BeaconFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBeaconFeatureApplType" default-entity-name="BeaconFeatureApplType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BeaconFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+
+    <!-- businessId를 이용해서 비콘 정보 불러오기-->
+    <service name="getBeaconInfoByBusinessId" engine="java" auth="true" export="true" action="GET" location="org.apache.ofbiz.beacon.BeaconServices" invoke="getBeaconInfoByBusinessId">
+        <description>비콘 정보 불러오기</description>
+        <attribute name="businessId" type="String" optional="false" mode="IN"/>
+        <attribute name="list" type="List" optional="true" mode="OUT"/>
+    </service>
+
+</services>

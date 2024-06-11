@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Site-Conf" xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+    <!-- The controller elements that are common to all OFBiz components
+         can be found in the following xml file. A component can override the
+         elements found in the common-controller.xml file. -->
+    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
+    <include location="component://common/webcommon/WEB-INF/portal-controller.xml"/>
+    <include location="component://talk/widget/talk/TalkCompoundWidgets.xml"/>
+
+    <description>Talk Component Site Configuration File</description>
+
+    <!-- Events to run on every request before security (chains exempt) -->
+    <!--
+    <preprocessor>
+    </preprocessor>
+    -->
+    <!-- Events to run on every request after all other processing (chains exempt) -->
+    <!--
+    <postprocessor>
+        <event name="test" type="java" path="org.apache.ofbiz.webapp.event.TestEvent" invoke="test"/>
+    </postprocessor>
+    -->
+
+    <!-- Request Mappings -->
+    <request-map uri="main"><security https="true" auth="true"/><response name="success" type="view" value="main"/></request-map>
+
+    <!-- Talk Requests -->
+    <request-map uri="FindTalk"><security https="true" auth="true"/><response name="success" type="view" value="FindTalk"/></request-map>
+    <request-map uri="EditTalk"><security https="true" auth="true"/><response name="success" type="view" value="EditTalk"/></request-map>
+    <request-map uri="EditTalkLayer"><security https="true" auth="true"/><response name="success" type="view" value="EditTalkLayer"/></request-map>
+    <request-map uri="TalkReportHtml"><security https="true" auth="true"/><response name="success" type="view" value="TalkReportHtml"/></request-map>
+    <request-map uri="TalkReportXls"><security https="true" auth="true"/><response name="success" type="view" value="TalkReportXls"/></request-map>
+    <request-map uri="TalkReportPdf"><security https="true" auth="true"/><response name="success" type="view" value="TalkReportPdf"/></request-map>
+    <request-map uri="ListTalkExport"><security https="true" auth="true"/><response name="success" type="view" value="ListTalkExport"/></request-map>
+    <request-map uri="createTalk">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalk"/>
+        <response name="success" type="request-redirect" value="EditTalk">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="FindTalk"/>
+    </request-map>
+    <request-map uri="updateTalk">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalk"/>
+        <response name="success" type="request-redirect" value="EditTalk">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalk"/>
+    </request-map>
+
+    <request-map uri="deleteTalk">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteTalk"/>
+        <response name="success" type="request-redirect" value="FindTalk">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalk"/>
+    </request-map>
+
+
+    <request-map uri="createTalkAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalk"/>
+        <response name="success" type="request" value="json"/>
+        <response name="error" type="request" value="json"/>
+    </request-map>
+    <request-map uri="updateTalkAjax">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalk"/>
+        <response name="success" type="view" value="findTalkAjax"/>
+        <response name="error" type="view" value="findTalkAjax"/>
+    </request-map>
+
+    <request-map uri="EditTalkItems"><security https="true" auth="true"/><response name="success" type="view" value="EditTalkItems"/></request-map>
+    <request-map uri="createTalkItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalkItem"/>
+        <response name="success" type="request-redirect" value="EditTalkItems">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkItems"/>
+    </request-map>
+    <request-map uri="updateTalkItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalkItem"/>
+        <response name="success" type="request-redirect" value="EditTalkItems">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkItems"/>
+    </request-map>
+    <request-map uri="deleteTalkItem">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteTalkItem"/>
+        <response name="success" type="request-redirect" value="EditTalkItems">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkItems"/>
+    </request-map>
+
+    <request-map uri="EditTalkFeatureAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditTalkFeatureAppls"/></request-map>
+    <request-map uri="talk_createTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureAppls"/>
+    </request-map>
+    <request-map uri="talk_updateTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureAppls"/>
+    </request-map>
+    <request-map uri="talk_deleteTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureAppls"/>
+    </request-map>
+
+    <!-- TalkFeature Requests -->
+    <request-map uri="FindTalkFeature"><security https="true" auth="true"/><response name="success" type="view" value="FindTalkFeature"/></request-map>
+    <request-map uri="EditTalkFeature"><security https="true" auth="true"/><response name="success" type="view" value="EditTalkFeature"/></request-map>
+    <request-map uri="createTalkFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalkFeature"/>
+        <response name="success" type="request-redirect" value="EditTalkFeature">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeature"/>
+    </request-map>
+    <request-map uri="updateTalkFeature">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalkFeature"/>
+        <response name="success" type="request-redirect" value="EditTalkFeature">
+            <redirect-parameter name="talkFeatureId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeature"/>
+    </request-map>
+
+    <request-map uri="EditTalkFeatureTalkAppls"><security https="true" auth="true"/><response name="success" type="view" value="EditTalkFeatureTalkAppls"/></request-map>
+    <request-map uri="feature_createTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureTalkAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureTalkAppls"/>
+    </request-map>
+    <request-map uri="feature_updateTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureTalkAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureTalkAppls"/>
+    </request-map>
+    <request-map uri="feature_deleteTalkFeatureAppl">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="deleteTalkFeatureAppl"/>
+        <response name="success" type="request-redirect" value="EditTalkFeatureTalkAppls">
+            <redirect-parameter name="talkId"/>
+        </response>
+        <response name="error" type="view" value="EditTalkFeatureTalkAppls"/>
+    </request-map>
+    <request-map uri="findTalkFeatures">
+        <security https="true" auth="true"/>
+        <event type="groovy" path="component://talk/src/main/groovy/org/apache/ofbiz/talk/FindTalkFeatures.groovy"/>
+        <response name="success" type="view" value="ajaxAutocompleteOptions"/>
+        <response name="error" type="view" value="ajaxAutocompleteOptions"/>
+    </request-map>
+
+    <request-map uri="FormWidgetTalks"><security https="true" auth="true"/><response name="success" type="view" value="FormWidgetTalks"/></request-map>
+
+    <request-map uri="LookupTalkFeature"><security https="true" auth="true"/><response name="success" type="view" value="LookupTalkFeature"/></request-map>
+    <request-map uri="LookupPartyGroupByName"><security https="true" auth="true"/><response name="success" type="view" value="LookupPartyGroupByName"/></request-map>
+
+    <request-map uri="ListTalkFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="ListTalkFormOnly"/></request-map>
+    <request-map uri="CreateTalkFormOnly"><security https="true" auth="false"/><response name="success" type="view" value="CreateTalkFormOnly"/></request-map>
+
+    <request-map uri="printTalkFOPFonts">
+      <security https="true" auth="true"/>
+      <response name="success" type="view" value="printTalkFOPFonts"/>
+    </request-map>
+    
+    <request-map uri="fonts.pdf">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="fonts.fo"/>
+    </request-map>
+
+    <request-map uri="views">
+        <security https="true" auth="false"/>
+        <response name="success" type="request" value="main"/>
+    </request-map>
+
+    <request-map uri="TalkGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="TalkGeoLocationPointSet1"/></request-map>
+    <request-map uri="TalkGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="TalkGeoLocationPointSet2"/></request-map>
+    <request-map uri="TalkGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="TalkGeoLocationPointSet3"/></request-map>
+    <request-map uri="TalkGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="TalkGeoLocationPointSet4"/></request-map>
+    <request-map uri="TalkGeoLocationAddress"><security https="true" auth="true"/><response name="success" type="view" value="TalkGeoLocationAddress"/></request-map>
+    <request-map uri="TalkOsmGeoLocationPointSet1"><security https="true" auth="true"/><response name="success" type="view" value="TalkOsmGeoLocationPointSet1"/></request-map>
+    <request-map uri="TalkOsmGeoLocationPointSet2"><security https="true" auth="true"/><response name="success" type="view" value="TalkOsmGeoLocationPointSet2"/></request-map>
+    <request-map uri="TalkOsmGeoLocationPointSet3"><security https="true" auth="true"/><response name="success" type="view" value="TalkOsmGeoLocationPointSet3"/></request-map>
+    <request-map uri="TalkOsmGeoLocationPointSet4"><security https="true" auth="true"/><response name="success" type="view" value="TalkOsmGeoLocationPointSet4"/></request-map>
+    
+    <!--flot talk requests-->
+    <request-map uri="TalkBarChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="TalkBarChart"/>
+    </request-map>
+    <request-map uri="TalkPieChart">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="TalkPieChart"/>
+    </request-map>
+    
+    <!-- Pdf Report Options -->
+    <request-map uri="TalkReportPdfOptions">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="TalkReportPdfOptions"/>
+    </request-map>
+    
+    <!-- Barcode/QRCode talk requests -->
+    <request-map uri="TalkReportPdfBarcode">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="TalkReportPdfBarcode"/>
+    </request-map>
+
+    <!-- React talk requests -->
+    <request-map uri="ReactTalk">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="TalkReact"/>
+    </request-map>
+
+    <!-- end of request mappings -->
+
+    <!-- View Mappings -->
+    <view-map name="main" type="screen" page="component://talk/widget/talk/CommonScreens.xml#main"/>
+
+    <view-map name="FindTalk" type="screen" page="component://talk/widget/talk/TalkScreens.xml#FindTalk"/>
+    <view-map name="EditTalk" type="screen" page="component://talk/widget/talk/TalkScreens.xml#EditTalk"/>
+    <view-map name="EditTalkLayer" type="screen" page="component://talk/widget/talk/TalkScreens.xml#EditTalkLayer"/>
+    <view-map name="EditTalkItems" type="screen" page="component://talk/widget/talk/TalkScreens.xml#EditTalkItems"/>
+    <view-map name="EditTalkFeatureAppls" type="screen" page="component://talk/widget/talk/TalkScreens.xml#EditTalkFeatureAppls"/>
+    <view-map name="ListTalkExport" type="screenxls" page="component://talk/widget/talk/TalkScreens.xml#ListTalkExport" content-type="application/vnd.ms-excel"/>
+    <view-map name="TalkReportHtml" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkReport"/>
+    <view-map name="TalkReportXls" type="screenxls" page="component://talk/widget/talk/TalkScreens.xml#TalkReport" content-type="application/vnd.ms-excel"/>
+    <view-map name="TalkReportPdf" type="screenfop" page="component://talk/widget/talk/TalkScreens.xml#TalkReport" content-type="application/pdf" encoding="none"/>
+    <view-map name="TalkReportPdfBarcode" type="screenfop" page="component://talk/widget/talk/TalkScreens.xml#TalkReportPdfBarcode" content-type="application/pdf" encoding="none"/>
+
+    <view-map name="FindTalkFeature" type="screen" page="component://talk/widget/talk/TalkFeatureScreens.xml#FindTalkFeature"/>
+    <view-map name="EditTalkFeature" type="screen" page="component://talk/widget/talk/TalkFeatureScreens.xml#EditTalkFeature"/>
+    <view-map name="EditTalkFeatureTalkAppls" type="screen" page="component://talk/widget/talk/TalkFeatureScreens.xml#EditTalkFeatureTalkAppls"/>
+
+    <view-map name="FormWidgetTalks" type="screen" page="component://talk/widget/talk/FormWidgetTalkScreens.xml#FormWidgetTalks"/>
+
+    <view-map name="LookupTalkFeature" type="screen" page="component://talk/widget/talk/TalkFeatureScreens.xml#LookupTalkFeature"/>
+    <view-map name="LookupPartyGroupByName" type="screen" page="component://talk/widget/talk/FormWidgetTalkLookupScreens.xml#LookupPartyGroupByName"/>
+
+    <!-- ajax view mappings -->
+    <view-map name="findTalkAjax" type="screen" page="component://talk/widget/talk/TalkAjaxScreens.xml#AjaxTalk"/>
+    <view-map name="ListTalkFormOnly" type="screen" page="component://talk/widget/talk/TalkAjaxScreens.xml#ListTalkFormOnly"/>
+    <view-map name="CreateTalkFormOnly" type="screen" page="component://talk/widget/talk/TalkAjaxScreens.xml#CreateTalkFormOnly"/>
+    <view-map name="printTalkFOPFonts" type="screenfop" page="component://talk/widget/talk/FormWidgetTalkScreens.xml#printTalkFOPFonts" content-type="application/pdf"  encoding="none"/>
+
+    <view-map name="TalkGeoLocationPointSet1" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkGeoLocationPointSet1"/>
+    <view-map name="TalkGeoLocationPointSet2" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkGeoLocationPointSet2"/>
+    <view-map name="TalkGeoLocationPointSet3" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkGeoLocationPointSet3"/>
+    <view-map name="TalkGeoLocationPointSet4" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkGeoLocationPointSet4"/>
+    <view-map name="TalkGeoLocationAddress" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkGeoLocationAddress"/>
+    <view-map name="TalkOsmGeoLocationPointSet1" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkOsmGeoLocationPointSet1"/>
+    <view-map name="TalkOsmGeoLocationPointSet2" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkOsmGeoLocationPointSet2"/>
+    <view-map name="TalkOsmGeoLocationPointSet3" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkOsmGeoLocationPointSet3"/>
+    <view-map name="TalkOsmGeoLocationPointSet4" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkOsmGeoLocationPointSet4"/>
+
+    <!-- Flot view mapping -->
+    <view-map name="TalkBarChart" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkBarChart"/>
+    <view-map name="TalkPieChart" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkPieChart"/>
+    
+    <!--  content FOP talk -->
+    <view-map name="fonts.fo" type="screenfop" page="component://content/widget/CommonScreens.xml#fonts.fo" content-type="application/pdf" encoding="none"/>
+
+    <!-- Supported Content Types -->
+    <!--
+        text/html
+        application/pdf
+        application/postscript
+        application/vnd.ms-excel
+        application/vnd.ms-word
+        application/vnd.ms-powerpoint
+        application/vnd.oasis.opendocument.text
+        application/vnd.oasis.opendocument.spreadsheet
+        application/vnd.oasis.opendocument.presentation
+        application/vnd.openxmlformats-officedocument.wordprocessingml.document
+        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        application/vnd.openxmlformats-officedocument.presentationml.presentation
+     -->
+
+    <view-map name="TalkReportPdfOptions" type="screen" page="component://talk/widget/talk/TalkScreens.xml#TalkReportPdfOptions"/>
+
+    <!-- React view mapping -->
+    <view-map name="TalkReact" type="screen" page="component://talk/widget/talk/TalkReactScreens.xml#ReactTalk"/>
+
+    <!-- end of view mappings -->
+</site-conf>

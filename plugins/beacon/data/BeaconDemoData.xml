@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <BeaconType beaconTypeId="Company" description="Company"/>
+    <BeaconType beaconTypeId="Education" description="Education"/>
+
+    <StatusType description="Beacon" statusTypeId="BEACON_STATUS" hasTable="N"/>
+    <StatusItem description="Disable" sequenceId="01" statusCode="DISABLE" statusId="BEACON_DISABLE" statusTypeId="BEACON_STATUS"/>
+    <StatusItem description="Enable" sequenceId="02" statusCode="ENABLE" statusId="BEACON_ENABLE" statusTypeId="BEACON_STATUS"/>
+    <StatusValidChange statusId="BEACON_DISABLE" statusIdTo="BEACON_ENABLE"/>
+    <StatusValidChange statusId="BEACON_ENABLE" statusIdTo="BEACON_DISABLE"/>
+
+    <Beacon beaconId="EX01" beaconName="Beacon 1" beaconTypeId="Company" statusId="BEACON_DISABLE"/>
+    <Beacon beaconId="EX02" beaconName="Beacon 2" beaconTypeId="Education" statusId="BEACON_ENABLE" />
+    <Beacon beaconId="EX03" beaconName="Beacon 3" beaconTypeId="Company" statusId="BEACON_DISABLE"/>
+    <Beacon beaconId="EX04" beaconName="Beacon 4" beaconTypeId="Company" statusId="BEACON_ENABLE"/>
+    <Beacon beaconId="EX05" beaconName="Beacon 5" beaconTypeId="Education" statusId="BEACON_ENABLE"/>
+    <Beacon beaconId="EX06" beaconName="Beacon 6" beaconTypeId="Education" statusId="BEACON_ENABLE"/>
+    <Beacon beaconId="EX07" beaconName="Beacon 7" beaconTypeId="Company" statusId="BEACON_ENABLE"/>
+    <Beacon beaconId="EX08" beaconName="Beacon 8" beaconTypeId="Company" statusId="BEACON_ENABLE"/>
+    <Beacon beaconId="EX09" beaconName="Beacon 9" beaconTypeId="Education" statusId="BEACON_DISABLE"/>
+    <Beacon beaconId="EX10" beaconName="Beacon 10" beaconTypeId="Education" statusId="BEACON_DISABLE"/>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--    <BeaconFeatureApplType beaconFeatureApplTypeId="REQUIRED" description="Required"/>-->
+<!--    <BeaconFeatureApplType beaconFeatureApplTypeId="DESIRED" description="Desired"/>-->
+<!--    <BeaconFeatureApplType beaconFeatureApplTypeId="NOT_ALLOWED" description="Not Allowed"/>-->
+
+
+    <!--    <StatusItem description="Approved" sequenceId="03" statusCode="APPROVED" statusId="BCST_APPROVED" statusTypeId="BEACON_STATUS"/>-->
+<!--    <StatusItem description="Implemented" sequenceId="04" statusCode="IMPLEMENTED" statusId="BCST_IMPLEMENTED" statusTypeId="BEACON_STATUS"/>-->
+<!--    <StatusItem description="Tested" sequenceId="05" statusCode="TESTED" statusId="BCST_TESTED" statusTypeId="BEACON_STATUS"/>-->
+<!--    <StatusItem description="Complete" sequenceId="06" statusCode="COMPLETE" statusId="BCST_COMPLETE" statusTypeId="BEACON_STATUS"/>-->
+<!--    <StatusItem description="Cancelled" sequenceId="99" statusCode="CANCELLED" statusId="BCST_CANCELLED" statusTypeId="BEACON_STATUS"/>-->
+
+
+<!--    <StatusValidChange statusId="BCST_APPROVED" statusIdTo="BCST_IMPLEMENTED" transitionName="Implementation Complete"/>-->
+<!--    <StatusValidChange statusId="BCST_IMPLEMENTED" statusIdTo="BCST_TESTED" transitionName="Testing Complete"/>-->
+<!--    <StatusValidChange statusId="BCST_TESTED" statusIdTo="BCST_COMPLETE" transitionName="Beacon Completed"/>-->
+<!--    <StatusValidChange statusId="BCST_IN_DESIGN" statusIdTo="BCST_CANCELLED" transitionName="Cancel Beacon"/>-->
+<!--    <StatusValidChange statusId="BCST_DEFINED" statusIdTo="BCST_CANCELLED" transitionName="Cancel Beacon"/>-->
+<!--    <StatusValidChange statusId="BCST_APPROVED" statusIdTo="BCST_CANCELLED" transitionName="Cancel Beacon"/>-->
+<!--    <StatusValidChange statusId="BCST_IMPLEMENTED" statusIdTo="BCST_CANCELLED" transitionName="Cancel Beacon"/>-->
+<!--    <StatusValidChange statusId="BCST_TESTED" statusIdTo="BCST_CANCELLED" transitionName="Cancel Beacon"/>-->
+
+<!--    <EnumerationType description="Beacon Feature Source" enumTypeId="EXMPL_FEAT_SOURCE" hasTable="N"/>-->
+<!--    <Enumeration description="Customer" enumCode="CUSTOMER" enumId="EXFTSRC_CUSTOMER" sequenceId="01" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Partner" enumCode="PARTNER" enumId="EXFTSRC_PARTNER" sequenceId="02" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Employee" enumCode="EMPLOYEE" enumId="EXFTSRC_EMPLOYEE" sequenceId="03" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+
+
+<!--    <Beacon beaconId="EX11" beaconName="Beacon 11" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN" description="mMy inspired beacon 11 description"/>-->
+<!--    <Beacon beaconId="EX12" beaconName="Beacon 12" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN" description="mMy inspired beacon 12 description"/>-->
+<!--    <create>-->
+<!--        <Beacon beaconId="EX13" beaconName="Beacon 13" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN"/>-->
+<!--        <Beacon beaconId="EX14" beaconName="Beacon 14" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN"/>-->
+<!--    </create>-->
+<!--    <create-replace>-->
+<!--        <Beacon beaconId="EX12" beaconName="Beacon 12 after replace" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN"/>-->
+<!--    </create-replace>-->
+<!--    <create-update>-->
+<!--        <Beacon beaconId="EX12" beaconName="Beacon 11 after update" beaconTypeId="INSPIRED" statusId="BCST_IN_DESIGN"/>-->
+<!--    </create-update>-->
+<!--    <delete>-->
+<!--        <Beacon beaconId="EX09"/>-->
+<!--    </delete>-->
+<!--    <Beacon beaconId="EX10" beaconName="Beacon 10 after update"/>-->
+
+<!--    <BeaconItem beaconId="EX01" beaconItemSeqId="00001" description="EX1-001" amount="10"/>-->
+<!--    <BeaconItem beaconId="EX01" beaconItemSeqId="00002" description="EX1-002" amount="20"/>-->
+<!--    <BeaconItem beaconId="EX02" beaconItemSeqId="00001" description="EX2-001" amount="10"/>-->
+<!--    <BeaconItem beaconId="EX02" beaconItemSeqId="00002" description="EX2-002" amount="20"/>-->
+<!--    <BeaconItem beaconId="EX02" beaconItemSeqId="00003" description="EX2-003" amount="30"/>-->
+
+<!--    <BeaconStatus beaconId="EX01" statusDate="2010-01-02 00:00:00" statusEndDate="2011-01-02 00:00:00" statusId="BCST_IN_DESIGN"/>-->
+<!--    <BeaconStatus beaconId="EX01" statusDate="2011-01-02 00:00:01" statusEndDate="2012-01-02 00:00:00" statusId="BCST_DEFINED"/>-->
+<!--    <BeaconStatus beaconId="EX01" statusDate="2012-01-02 00:00:00" statusEndDate="2013-01-02 00:00:00" statusId="BCST_APPROVED"/>-->
+<!--    <BeaconStatus beaconId="EX02" statusDate="2010-01-02 00:00:00" statusEndDate="2011-01-02 00:00:00" statusId="BCST_IN_DESIGN"/>-->
+<!--    <BeaconStatus beaconId="EX02" statusDate="2011-01-02 00:00:01" statusEndDate="2012-01-02 00:00:00" statusId="BCST_DEFINED"/>-->
+<!--    <BeaconStatus beaconId="EX02" statusDate="2012-01-02 00:00:00" statusEndDate="2013-01-02 00:00:00" statusId="BCST_APPROVED"/>-->
+</entity-engine-xml>

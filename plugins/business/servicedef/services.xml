@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Business Services</description>
+    <vendor>OFBiz</vendor>
+    <version>1.0</version>
+
+    <!-- Business & Related Services -->
+    <service name="createBusiness" default-entity-name="Business" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create a Business</description>
+        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+<!--        <override name="businessTypeId" optional="false"/>-->
+        <override name="statusId" optional="false"/>
+        <override name="businessName" optional="false"/>
+    </service>
+    <service name="updateBusiness" default-entity-name="Business" engine="entity-auto" invoke="update" auth="true" export="true" action="PUT">
+        <description>Update a Business</description>
+        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="OUT" optional="false"/>
+    </service>
+    <service name="deleteBusiness" default-entity-name="Business" engine="entity-auto" invoke="delete" auth="true" export="true" action="DELETE">
+        <description>Delete a Business</description>
+        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+    <service name="createBusinessStatus" default-entity-name="BusinessStatus" engine="simple"
+            location="component://business/minilang/business/BusinessServices.xml" invoke="createBusinessStatus" auth="true" export="true" action="POST">
+        <description>Create a BusinessStatus</description>
+        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="all" mode="IN" optional="false">
+            <exclude field-name="statusDate"/>
+            <exclude field-name="statusEndDate"/>
+            <exclude field-name="changeByUserLoginId"/>
+        </auto-attributes>
+    </service>
+
+
+    <service name="createBusinessItem" default-entity-name="BusinessItem" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BusinessItem</description>
+        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="businessItemSeqId" mode="OUT"/> <!-- make this OUT rather than IN, we will automatically generate the next sub-sequence ID -->
+    </service>
+    <service name="updateBusinessItem" default-entity-name="BusinessItem" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BusinessItem</description>
+        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBusinessItem" default-entity-name="BusinessItem" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BusinessItem</description>
+        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+
+<!--    <service name="createBusinessBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="create" auth="true">-->
+<!--        <description>Create a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--        <auto-attributes include="nonpk" mode="IN" optional="true"/>-->
+<!--        <override name="businessBeaconSeqId" mode="OUT"/> &lt;!&ndash; make this OUT rather than IN, we will automatically generate the next sub-sequence ID &ndash;&gt;-->
+<!--        <override name="description" optional="true"/>-->
+<!--    </service>-->
+<!--    <service name="updateBusinessBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="update" auth="true">-->
+<!--        <description>Update a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--        <auto-attributes include="nonpk" mode="IN" optional="true"/>-->
+<!--    </service>-->
+<!--    <service name="deleteBusinessBeacon" default-entity-name="Beacon" engine="entity-auto" invoke="delete" auth="true">-->
+<!--        <description>Delete a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--    </service>-->
+
+<!--    <service name="createBusinessBeacon2" default-entity-name="BusinessBeacon" engine="entity-auto" invoke="create" auth="true">-->
+<!--        <description>Create a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--        <auto-attributes include="nonpk" mode="IN" optional="true"/>-->
+<!--        <override name="businessBeaconSeqId" mode="OUT"/> &lt;!&ndash; make this OUT rather than IN, we will automatically generate the next sub-sequence ID &ndash;&gt;-->
+<!--        <override name="description" optional="true"/>-->
+<!--    </service>-->
+<!--    <service name="updateBusinessBeacon2" default-entity-name="BusinessBeacon" engine="entity-auto" invoke="update" auth="true">-->
+<!--        <description>Update a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--        <auto-attributes include="nonpk" mode="IN" optional="true"/>-->
+<!--    </service>-->
+<!--    <service name="deleteBusinessBeacon2" default-entity-name="BusinessBeacon" engine="entity-auto" invoke="delete" auth="true">-->
+<!--        <description>Delete a BusinessBeacon</description>-->
+<!--        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>-->
+<!--        <auto-attributes include="pk" mode="IN" optional="false"/>-->
+<!--    </service>-->
+
+
+
+    <!-- BusinessFeature Services -->
+    <service name="createBusinessFeature" default-entity-name="BusinessFeature" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BusinessFeature</description>
+        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="description" optional="false"/>
+    </service>
+    <service name="updateBusinessFeature" default-entity-name="BusinessFeature" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BusinessFeature</description>
+        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBusinessFeature" default-entity-name="BusinessFeature" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BusinessFeature</description>
+        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="createBusinessFeatureAppl" default-entity-name="BusinessFeatureAppl" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BusinessFeatureAppl</description>
+        <permission-service service-name="businessGenericPermission" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fromDate" optional="true"/>
+    </service>
+    <service name="updateBusinessFeatureAppl" default-entity-name="BusinessFeatureAppl" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BusinessFeatureAppl</description>
+        <permission-service service-name="businessGenericPermission" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBusinessFeatureAppl" default-entity-name="BusinessFeatureAppl" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BusinessFeatureAppl</description>
+        <permission-service service-name="businessGenericPermission" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- Permission Services -->
+    <service name="businessGenericPermission" engine="simple"
+             location="component://business/minilang/BusinessPermissionServices.xml" invoke="businessGenericPermission">
+        <implements service="permissionInterface"/>
+    </service>
+
+    <!-- Business ServiceTest Service -->
+    <service name="testCreateBusinessService" engine="simple"
+             location="component://business/minilang/business/BusinessServices.xml" invoke="testCreateBusinessService">
+        <implements service="testServiceInterface"/>
+    </service>
+    <!-- Send push notification service -->
+    <service name="sendBusinessPushNotifications" engine="java"
+                location="org.apache.ofbiz.business.BusinessServices" invoke="sendBusinessPushNotifications" auth="true">
+        <attribute name="businessId" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="message" mode="IN" type="String" optional="true"></attribute>
+        <attribute name="successMessage" mode="IN" type="String" optional="true"></attribute>
+    </service>
+
+    <!-- BusinessType services -->
+    <service name="createBusinessType" default-entity-name="BusinessType" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create a record of BusinessType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateBusinessType" default-entity-name="BusinessType" engine="entity-auto" invoke="update" auth="true" export="true" action="PUT">
+        <description>Update a record of BusinessType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBusinessType" default-entity-name="BusinessType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a record of BusinessType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- BusinessFeatureApplType services -->
+    <service name="createBusinessFeatureApplType" default-entity-name="BusinessFeatureApplType" engine="entity-auto" invoke="create" auth="true">
+        <description>Create a BusinessFeatureApplType</description>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <auto-attributes include="pk" mode="INOUT" optional="true"/>
+    </service>
+    <service name="updateBusinessFeatureApplType" default-entity-name="BusinessFeatureApplType" engine="entity-auto" invoke="update" auth="true">
+        <description>Update a BusinessFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="deleteBusinessFeatureApplType" default-entity-name="BusinessFeatureApplType" engine="entity-auto" invoke="delete" auth="true">
+        <description>Delete a BusinessFeatureApplType</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- majorId를 이용해서 업체 정보 불러오기-->
+    <service name="getBusinessInfoByMajorId" engine="java" auth="true" export="true" action="GET" location="org.apache.ofbiz.business.BusinessServices" invoke="getBusinessInfoByMajorId">
+        <description>업체 정보 불러오기</description>
+        <attribute name="majorId" type="String" optional="false" mode="IN"/>
+        <attribute name="list" type="List" optional="true" mode="OUT"/>
+    </service>
+    <service name="getCompaniesByMajorId" engine="java" auth="true" export="true" action="GET" location="org.apache.ofbiz.business.BusinessServices" invoke="getCompaniesByMajorId" >
+        <description>Get Companies by Major ID</description>
+        <attribute name="majorId" type="String" mode="IN" optional="false"/>
+        <attribute name="list" type="List" optional="true" mode="OUT"/>
+    </service>
+
+    <!-- 업체에 비콘 정보 추가/삭제-->
+    <service name="addBusinessToBeacon" default-entity-name="Business" engine="entity-auto" invoke="create" auth="true" >
+        <description>Add Business To Beacon</description>
+        <permission-service service-name="prodCatToPartyPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fromDate" optional="true"/>
+    </service>
+    <service name="updateBusinessToBeacon" default-entity-name="Business" engine="entity-auto" invoke="update" auth="true">
+        <description>Add ProdCatalog To Party</description>
+        <permission-service service-name="prodCatalogToPartyPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="removeBusinessFromBeacon" default-entity-name="Business" engine="entity-auto" invoke="delete" auth="true">
+        <description>Remove ProdCatalog From Party</description>
+        <permission-service service-name="prodCatalogToPartyPermissionCheck" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+</services>

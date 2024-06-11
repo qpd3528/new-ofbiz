@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <!-- list all businessfeatures in a tabular format -->
+    <screen name="FindBusinessFeature">
+        <section>
+            <actions>
+                <set field="headerItem" value="BusinessFeature"/>
+                <set field="titleProperty" value="PageTitleFindBusinessFeature"/>
+                <set field="businessFeatureCtx" from-field="parameters"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <section>
+                            <condition>
+                                <if-has-permission permission="BUSINESS" action="_VIEW"/>
+                            </condition>
+                            <widgets>
+                                <decorator-screen name="FindScreenDecorator" location="component://common/widget/CommonScreens.xml">
+                                    <decorator-section name="menu-bar">
+                                        <container style="button-bar"><link target="EditBusinessFeature" text="${uiLabelMap.BusinessNewBusinessFeature}" style="buttontext create"/></container>
+                                    </decorator-section>
+                                    <decorator-section name="search-options">
+                                        <include-form name="FindBusinessFeatures" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                                    </decorator-section>
+                                    <decorator-section name="search-results">
+                                        <include-grid name="ListBusinessFeatures" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                                    </decorator-section>
+                                </decorator-screen>
+                            </widgets>
+                            <fail-widgets>
+                                <label style="h3">${uiLabelMap.BusinessViewPermissionError}</label>
+                            </fail-widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBusinessFeature">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleEditBusinessFeature"/>
+                <set field="tabButtonItem" value="EditBusinessFeature"/>
+                <set field="businessFeatureId" from-field="parameters.businessFeatureId"/>
+                <entity-one entity-name="BusinessFeature" value-field="businessFeature"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBusinessFeatureDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <screenlet title="${uiLabelMap.BusinessFeature}">
+                            <include-form name="EditBusinessFeature" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditBusinessFeatureBusinessAppls">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PageTitleEditBusinessFeatureBusinessAppls"/>
+                <set field="tabButtonItem" value="EditBusinessFeatureBusinessAppls"/>
+                <set field="businessFeatureId" from-field="parameters.businessFeatureId"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="CommonBusinessFeatureDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <screenlet title="${uiLabelMap.BusinessFeaturesByBusiness}">
+                            <include-grid name="ListBusinessFeatureAppls" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                        </screenlet>
+                        <screenlet title="Add Feature To Business">
+                            <include-form name="AddBusinessFeatureAppl" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                        </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LookupBusinessFeature">
+        <section>
+            <condition>
+                <if-has-permission permission="BUSINESS" action="_VIEW"/>
+            </condition>
+            <actions>
+                <property-map resource="BusinessUiLabels" map-name="uiLabelMap" global="true"/>
+                <set field="title" from-field="uiLabelMap.PageTitleLookupBusinessFeature"/>
+                <set field="queryString" from-field="result.queryString"/>
+                <set field="viewIndex" from-field="parameters.VIEW_INDEX" type="Integer"/>
+                <set field="viewSizeDefaultValue" value="${groovy: modelTheme.getDefaultViewSize()}" type="Integer"/>
+                <set field="viewSize" from-field="parameters.VIEW_SIZE" type="Integer" default-value="${viewSizeDefaultValue}"/>
+                
+                <!-- entries needed for lookup ajax auto completer -->
+                <!-- required: entity to search in -->
+                <set field="entityName" value="BusinessFeature"/>
+
+                <!-- required: fields to search a match -->
+                <set field="searchFields" value="[businessFeatureId, description]"/>
+                
+                <!-- optional: field to return after user selection, default is first element of searchFields -->
+                <!-- return field might be hidden based on widget.autocompleter.displayReturnField property in widget.properties -->
+                <!--set field="returnField" value="businessFeatureId"/-->
+
+                <!-- optional: fields to display, default are searchFields -->
+                <!--set field="displayFields" value="[businessFeatureId, description]"/-->
+                
+            </actions>
+
+            <widgets>
+                <decorator-screen name="LookupDecorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="search-options">
+                        <include-form name="LookupFindBusinessFeature" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                    </decorator-section>
+                    <decorator-section name="search-results">
+                        <include-grid name="LookupListBusinessFeature" location="component://business/widget/business/BusinessFeatureForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+</screens>

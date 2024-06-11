@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <form name="FindTalks" type="single" target="FindTalk" default-entity-name="Talk">
+        <field name="noConditionFind"><hidden value="Y"/><!-- if this isn't there then with all fields empty no query will be done --></field>
+        <field name="talkId" title="${uiLabelMap.TalkId}"><text-find/></field>
+        <field name="talkName" title="${uiLabelMap.TalkName}"><text-find/></field>
+        <field name="talkTypeId" title="${uiLabelMap.TalkType}">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="talkTypeId" entity-name="TalkType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="statusId" title="${uiLabelMap.TalkStatus}">
+            <drop-down allow-empty="true" current-description="">
+                <entity-options key-field-name="statusId" entity-name="TalkStatusItem"/>
+            </drop-down>
+        </field>
+        <field name="mediaTypeId" title="${uiLabelMap.MediaTypeId}">
+            <drop-down allow-empty="true">
+                <entity-options key-field-name="mediaTypeId" entity-name="MediaType"/>
+            </drop-down>
+        </field>
+        <field name="useTalk" title="${uiLabelMap.UseTalk}">
+            <radio><option key="Y"/><option key="N"/></radio>
+        </field>
+<!--        <field name="viewSubtitle" title="${uiLabelMap.ViewSubtitle}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="viewStt" title="${uiLabelMap.ViewStt}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="readSubtitle" title="${uiLabelMap.ReadSubtitle}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="actualSound" title="${uiLabelMap.ActualSound}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="clearSound" title="${uiLabelMap.ClearSound}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="removeNoise" title="${uiLabelMap.RemoveNoise}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="recognizeSpeaker" title="${uiLabelMap.RecognizeSpeaker}"><check><option key="Y"/><option key="N"/></check></field>-->
+<!--        <field name="listOtherElements">-->
+<!--            <radio>-->
+<!--                <option key="status"/>-->
+<!--            </radio>-->
+<!--        </field>-->
+        <field name="searchButton"><submit/></field>
+    </form>
+
+    <grid name="ListTalks" list-name="listIt" paginate-target="FindTalk" default-entity-name="Talk" separate-columns="true"
+        odd-row-style="alternate-row" header-row-style="header-row-2" default-table-style="basic-table hover-bar">
+        <actions>
+            <service service-name="performFind" result-map="result" result-map-list="listIt">
+                <field-map field-name="inputFields" from-field="talkCtx"/>
+                <field-map field-name="entityName" value="Talk"/>
+                <field-map field-name="orderBy" from-field="parameters.sortField"/>
+                <field-map field-name="viewIndex" from-field="viewIndex"/>
+                <field-map field-name="viewSize" from-field="viewSize"/>
+            </service>
+            <set field="sortField" from-field="parameters.sortField"/>
+        </actions>
+        <alt-row-style use-when="'EXST_APPROVED'.equals(statusId)" style="Validate"/>
+        <alt-row-style use-when="'EXST_CANCELLED'.equals(statusId)" style="Warn"/>
+        <field name="talkId" title="${uiLabelMap.TalkId}" widget-style="buttontext">
+            <hyperlink description="${talkId}" target="EditTalk" also-hidden="false">
+                <parameter param-name="talkId"/>
+            </hyperlink>
+        </field>
+        <field name="talkName" title="${uiLabelMap.TalkName}" sort-field="true"><display/></field>
+        <field name="talkTypeId" title="${uiLabelMap.TalkType}"><display-entity entity-name="TalkType"/></field>
+        <field name="statusId" title="${uiLabelMap.TalkStatus}"><display-entity entity-name="StatusItem"/></field>
+        <field name="mediaTypeId" title="${uiLabelMap.MediaTypeId}"><display-entity entity-name="MediaType"/></field>
+<!--        <field name="description" title="${uiLabelMap.TalkDescription}" sort-field="true"><display/></field>-->
+        <field name="useTalk" title="${uiLabelMap.UseTalk}"><display/></field>
+<!--        <field name="conditionalDesc" ignore-when="&quot;talkName&quot;.equals(sortField)" title="my desc"><display description="${description}"/></field>-->
+        <field name="delete" title="${uiLabelMap.delete}" widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.${talkId}} ${uiLabelMap.delete}" target="deleteTalk" also-hidden="false" confirmation-message="${talkName}를 삭제하시겠습니까?">
+                <parameter param-name="talkId"/>
+            </hyperlink>
+        </field>
+
+    </grid>
+
+    <!--talk form with include another form -->
+    <grid name="ListTalksWithFeatures" extends="ListTalks" extends-resource="component://talk/widget/talk/TalkForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="features"><include-form name="TalkFeaturesInLine" location="component://talk/widget/talk/TalkForms.xml"/></field>
+    </grid>
+    <form name="TalkFeaturesInLine" type="list" default-table-style="basic-table light-grid" default-entity-name="TalkFeatureAppl">
+        <actions>
+            <entity-condition entity-name="TalkFeatureAppl">
+                <condition-expr field-name="talkId" from-field="talkId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="TalkFeatureAppl" default-field-type="display"/>
+        <field name="talkId"><ignored/></field>
+    </form>
+
+    <!--talk form with include a screen -->
+    <grid name="ListTalksWithItems" extends="ListTalks" extends-resource="component://talk/widget/talk/TalkForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="items"><include-screen name="TalkItemsInLine" location="component://talk/widget/talk/TalkScreens.xml"/></field>
+    </grid>
+
+    <grid name="ListTalkItemsInLine" default-table-style="basic-table light-grid">
+        <actions>
+            <entity-condition entity-name="TalkItem">
+                <condition-expr field-name="talkId" from-field="talkId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="TalkItem" default-field-type="display"/>
+        <field name="talkId"><ignored/></field>
+    </grid>
+
+    <!--talk form with include a grid -->
+    <grid name="ListTalksWithStatus" extends="ListTalks" extends-resource="component://talk/widget/talk/TalkForms.xml">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+        <field name="status"><include-grid name="TalkStatusInLine" location="component://talk/widget/talk/TalkForms.xml"/></field>
+    </grid>
+
+    <grid name="TalkStatusInLine" default-table-style="basic-table light-grid" default-entity-name="TalkStatus">
+        <actions>
+            <entity-condition entity-name="TalkStatus">
+                <condition-expr field-name="talkId" from-field="talkId"/>
+                <order-by field-name="statusDate"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-entity entity-name="TalkStatus" default-field-type="display"/>
+        <field name="talkId"><ignored/></field>
+    </grid>
+
+    <grid name="ListTalkExport" extends="ListTalks" extends-resource="component://talk/widget/talk/TalkForms.xml" paginate="false">
+        <actions>
+            <call-parent-actions/>
+        </actions>
+    </grid>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (ListTalks) would
+        have these attributes.
+         For the Ajax talk we want all talk entities listed, so the we use the entity-condition
+         instead of the performFind service. -->
+    <grid name="ListTalksAjax" extends="ListTalks" paginate-target="authview/findTalkAjax">
+        <actions>
+            <entity-condition entity-name="Talk"><order-by field-name="talkName"/></entity-condition>
+        </actions>
+        <field name="talkId" title="${uiLabelMap.TalkId}" widget-style="buttontext">
+            <hyperlink description="${talkId}" target="EditTalkLayer" also-hidden="false" link-type="layered-modal">
+                <parameter param-name="talkId"/>
+            </hyperlink>
+        </field>
+        <field name="talkName" title="${uiLabelMap.TalkName}" id-name="talkName">
+            <display>
+                <in-place-editor url="/talk/control/updateTalk" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="talkId" from-field="talkId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+
+        <field name="description" title="${uiLabelMap.TalkDescription}" id-name="description">
+            <display>
+                <in-place-editor url="/talk/control/updateTalk" cancel-control="button" saving-text="Updating..." text-between-controls=" ">
+                    <simple-editor/>
+                    <field-map field-name="talkId" from-field="talkId"/>
+                    <field-map field-name="statusId"  from-field="statusId"/>
+                </in-place-editor>
+            </display>
+        </field>
+        <on-event-update-area event-type="paginate" area-id="ListTalksAjax" area-target="ListTalkFormOnly"/>
+    </grid>
+
+    <form name="EditTalk" type="single" target="updateTalk" title="" default-map-name="talk" default-entity-name="Talk">
+        <actions>
+            <entity-one entity-name="StatusItem" value-field="currentStatus" auto-field-map="false">
+                <field-map field-name="statusId" from-field="talk.statusId"/>
+            </entity-one>
+            <set field="anotherText" from-field="talk.anotherText"/>
+        </actions>
+        <alt-target use-when="talk==null" target="createTalk"/>
+        <auto-fields-service service-name="updateTalk"/>
+        <field use-when="talk!=null" name="talkId" title="${uiLabelMap.TalkId}"><display/></field>
+        <field use-when="talk==null @and talkId==null" name="talkId" title="${uiLabelMap.TalkId}"><ignored/></field>
+        <field use-when="talk==null @and talkId!=null" name="talkId" title="${uiLabelMap.TalkId}"><display description="${uiLabelMap.CommonCannotBeFound}: [${talkId}]" also-hidden="false"/></field>
+        <field name="talkTypeId" title="${uiLabelMap.TalkType}" id-name="talkTypeId" required-field="true">
+            <drop-down allow-empty="false">
+                <!-- this is a neat feature, but not good for the type because the user would have to know the possible types in order to enter at least the first letter, so leaving it out by default; just uncomment to enable: <auto-complete/> -->
+                <entity-options entity-name="TalkType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="statusId"  use-when="talk==null" title="${uiLabelMap.TalkStatus}" required-field="true">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="TalkStatusItem"/>
+            </drop-down>
+        </field>
+        <field name="statusId" use-when="talk!=null" title="${uiLabelMap.TalkStatus}" required-field="true">
+            <drop-down allow-empty="false" current="first-in-list" current-description="${currentStatus.description}">
+                <option key="${currentStatus.statusId}" description="${currentStatus.description}"/>
+                <entity-options entity-name="StatusValidChangeToDetail" key-field-name="statusIdTo" description="${transitionName} (${description})">
+                    <entity-constraint name="statusId" env-name="talk.statusId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="mediaTypeId" required-field="true"><drop-down allow-empty="true"><entity-options entity-name="MediaType"/></drop-down></field>
+        <field name="talkName" title="${uiLabelMap.TalkName}" required-field="true"><text/></field>
+        <field name="talkName" title="${uiLabelMap.TalkName}" required-field="true" widget-style="required"><text placeholder="${uiLabelMap.TalkName}"/></field>
+        <field name="description" title="${uiLabelMap.TalkDescription}"><textarea/></field>
+        <field name="useTalk" title="${uiLabelMap.UseTalk}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="maxMember" title="${uiLabelMap.MaxMember}" required-field="true"><text/></field>
+        <field name="maxSpeakingMember" title="${uiLabelMap.MaxSpeakingMember}" required-field="true"><text/></field>
+        <field name="viewSubtitle" title="${uiLabelMap.ViewSubtitle}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="viewStt" title="${uiLabelMap.ViewStt}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="readSubtitle" title="${uiLabelMap.ReadSubtitle}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="actualSound" title="${uiLabelMap.ActualSound}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="clearSound" title="${uiLabelMap.ClearSound}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="removeNoise" title="${uiLabelMap.RemoveNoise}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="recognizeSpeaker" title="${uiLabelMap.RecognizeSpeaker}" required-field="true"><radio no-current-selected-key="N"><option key="Y" description="${uiLabelMap.On}"/><option key="N" description="${uiLabelMap.Off}"/></radio></field>
+        <field name="inputVoiceSize" title="${uiLabelMap.InputVoiceSize}" required-field="true"><drop-down><option
+                key="99"/><option key="100"/><list-options list-name="" key-name=""/></drop-down></field><!--리스트를 몇 가지 주고 직접입력 이라는 선택지를 줌 / 직접입력 시 입력할 수 있는 범위를 초과하지 않도록 조건이 필요함-->
+        <field name="submitButton" use-when="talk==null" title="${uiLabelMap.TalkCreate}"><submit button-type="button"/></field>
+        <field name="submitButton" use-when="talk!=null" title="${uiLabelMap.TalkUpdate}"><submit button-type="button"/></field>
+    </form>
+
+    <!-- Typically, this extended form wouldn't be necessary. The parent form (EditTalk) would
+        have these settings. -->
+    <form name="EditTalkBackgroundSubmit" type="single" extends="EditTalk" target="updateTalkAjax">
+        <alt-target use-when="ajaxTalk==null" target="createTalkAjax"/>
+        <field name="statusId" use-when="ajaxTalk==null" title="${uiLabelMap.TalkStatus}" id-name="statusId">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="TalkStatusItem"/>
+            </drop-down>
+        </field>
+        <on-event-update-area event-type="submit" area-id="ListTalksAjax" area-target="ListTalkFormOnly"/>
+        <!--on-event-update-area event-type="submit" area-id="EditTalkAjax" area-target="CreateTalkFormOnly"/--><!-- JLR: this does not seem to be useful -->
+    </form>
+
+    <!-- TalkItem -->
+    <grid name="ListTalkItems"  list-name="talkItems"  target="updateTalkItem">
+        <actions>
+            <entity-condition entity-name="TalkItem">
+                <condition-expr field-name="talkId" from-field="talkId"/>
+                <order-by field-name="talkItemSeqId"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateTalkItem"/>
+        <field name="talkId"><hidden/></field>
+        <field name="talkItemSeqId" title="${uiLabelMap.CommonItem}"><display/></field>
+        <field name="description"><text size="30"/></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteTalkItem" also-hidden="false" confirmation-message="${uiLabelMap.CommonConfirmDelete}" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="talkId"/>
+                <parameter param-name="talkItemSeqId"/>
+            </hyperlink>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.TalkUpdate}"><submit button-type="button"/></field>
+    </grid>
+
+    <form name="AddTalkItem" type="single" target="createTalkItem" title="">
+        <auto-fields-service service-name="createTalkItem"/>
+        <field name="talkId"><hidden/></field>
+        <field name="talkItemSeqId"><ignored/><!-- this will be auto-sequenced --></field>
+        <field name="amountUomId" title="${uiLabelMap.CommonUom}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="UomAndType" key-field-name="uomId" description="${typeDescription}: ${description} (${abbreviation})">
+                    <entity-order-by field-name="typeDescription"/>
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button" request-confirmation="true"/></field>
+    </form>
+
+    <!-- TalkFeatureAppl -->
+    <grid name="ListTalkFeatureAppls"  list-name="talkFeatureAppls"  target="talk_updateTalkFeatureAppl">
+        <actions>
+            <entity-condition entity-name="TalkFeatureAppl">
+                <condition-expr field-name="talkId" from-field="talkId"/>
+                <order-by field-name="sequenceNum"/>
+            </entity-condition>
+        </actions>
+        <auto-fields-service service-name="updateTalkFeatureAppl"/>
+        <field name="talkId"><hidden/></field>
+        <field name="talkFeatureId" title="${uiLabelMap.TalkFeature}">
+            <display-entity entity-name="TalkFeature">
+                <sub-hyperlink target="EditTalkFeature" description="${talkFeatureId}" link-style="buttontext">
+                    <parameter param-name="talkFeatureId"/>
+                </sub-hyperlink>
+            </display-entity>
+        </field>
+        <field name="fromDate"><display/></field>
+        <field name="talkFeatureApplTypeId" title="${uiLabelMap.TalkType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="TalkFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.TalkUpdate}"><submit button-type="button"/></field>
+        <field name="deleteLink" title=" " widget-style="buttontext">
+            <hyperlink description="${uiLabelMap.CommonDelete}" target="talk_deleteTalkFeatureAppl" also-hidden="false" image-location="${iconsLocation}/delete.png">
+                <parameter param-name="talkId"/>
+                <parameter param-name="talkFeatureId"/>
+                <parameter param-name="fromDate"/>
+            </hyperlink>
+        </field>
+    </grid>
+
+    <form name="AddTalkFeatureAppl" type="single" target="talk_createTalkFeatureAppl" title="">
+        <auto-fields-service service-name="createTalkFeatureAppl"/>
+        <field name="talkId"><hidden/></field>
+        <field name="talkFeatureId" title="${uiLabelMap.TalkFeature}">
+            <lookup target-form-name="LookupTalkFeature"/>
+        </field>
+        <field name="talkFeatureApplTypeId" title="${uiLabelMap.TalkType}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="TalkFeatureApplType">
+                    <entity-order-by field-name="description"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.CommonAdd}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="SetTalkPdfPassword" type="single" target="TalkReportPdf" title="">
+        <field name="talkId"><hidden/></field>
+        <field name="ownerPassword" title="${uiLabelMap.PDFOwnerPassword}"><text size="15" maxlength="250"/></field>
+        <field name="userPassword" title="${uiLabelMap.PDFUserPassword}"><text size="15" maxlength="250"/></field>
+        <field name="allowPrint" title="${uiLabelMap.PDFAllowPrint}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowCopyContent" title="${uiLabelMap.PDFAllowCopyContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditContent" title="${uiLabelMap.PDFAllowEditContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowEditAnnotations" title="${uiLabelMap.PDFAllowEditAnnotations}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowFillInForms" title="${uiLabelMap.PDFAllowFillInForms}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAccessContent" title="${uiLabelMap.PDFAllowAccessContent}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowAssembleDocument" title="${uiLabelMap.PDFAllowAssembleDocument}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="allowPrintHq" title="${uiLabelMap.PDFAllowPrintHq}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encrypt-metadata" title="${uiLabelMap.PDFEncryptMetadata}">
+            <drop-down>
+                <option key="true" description="${uiLabelMap.CommonTrue}"/>
+                <option key="false" description="${uiLabelMap.CommonFalse}"/>
+            </drop-down>
+        </field>
+        <field name="encryption-length" title="${uiLabelMap.PDFEncryptionLength}"><text size="15"/></field>
+        <field name="submitButton" title="${uiLabelMap.TalkGeneratePDF}"><submit button-type="button"/></field>
+    </form>
+</forms>

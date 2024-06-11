@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="FormWidgetBusinesss">
+        <section>
+            <actions>
+                <set field="headerItem" value="FormWidgetBusinesss"/>
+                <set field="layoutSettings.javaScripts[]" value="/common/js/util/combobox.js" global="true" />
+                <set field="formWidgetBusinessFormsUrl" value="http://svn.apache.org/repos/asf/ofbiz/ofbiz-plugins/trunk/business/widget/business/FormWidgetBusinessForms.xml"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <section>
+                            <condition>
+                                <if-has-permission permission="BUSINESS" action="_VIEW"/>
+                            </condition>
+                            <widgets>
+                                <container style="h1"><label>${uiLabelMap.PageTitleFormWidgetBusinesss}</label></container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessDateTimeFields}</label></container>
+                                    <container style="screenlet-body">
+                                        <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                        <label>${uiLabelMap.BusinessDefinitionName} &quot;DateTimeFieldsBusinessForm&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                        <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                        <include-form name="DateTimeFieldsBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                    </container>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessDropDownFields}</label></container>
+                                    <container style="screenlet-body">
+                                        <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                        <label>${uiLabelMap.BusinessDefinitionName} &quot;DropDownFieldsBusinessForm&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                        <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                    </container>
+                                    <section>
+                                        <actions>
+                                            <!-- fields for SetDependentDropdownValuesJs.ftl, it's a try on generalization,
+                                                if you need an business with more than one dropdown in a form have a look at 
+                                                EditProductPriceRules screen in PriceScreens.xml-->
+                                            <set field="dependentForm" value="DropDownFieldsBusinessForm"/>
+                                            <set field="paramKey" value="countryGeoId"/>
+                                            <set field="mainId" value="countryGeoId"/>
+                                            <set field="dependentId" value="stateProvinceGeoId"/>
+                                            <set field="requestName" value="getAssociatedStateList"/>
+                                            <set field="responseName" value="stateList"/>
+                                            <set field="dependentKeyName" value="geoId"/>
+                                            <set field="descName" value="geoName"/>
+                                            <set field="selectedDependentOption" from-field="postalAddress.stateProvinceGeoId" default-value="_none_"/><!-- postalAddress.stateProvinceGeoId does not make much sense here, only to get the idea -->
+                                            <set field="focusFieldName" value="DateTimeFieldsBusinessForm_field1_i18n"/>
+                                            
+                                            <!-- asmselect parameters, must be prefixed by asm_ for SetMultipleSelectJs.ftl -->
+                                            <set field="asm_multipleSelectForm" value="DropDownMultipleFieldBusinessForm"/>
+                                            <set field="asm_multipleSelect"  value="DropDownMultipleFieldBusinessForm_countryGeoIdMultiple"/>
+                                            <set field="asm_formSize" value="600"/>
+                                            <set field="asm_asmListItemPercentOfForm" value="95"/>
+                                            <set field="asm_sortable" value="false"/>
+                                        </actions>
+                                        <widgets>
+                                            <platform-specific><html><html-template multi-block="true" location="component://common-theme/template/includes/SetDependentDropdownValuesJs.ftl"/></html></platform-specific>
+                                            <platform-specific><html><html-template multi-block="true" location="component://common-theme/template/includes/SetMultipleSelectJs.ftl"/></html></platform-specific>
+                                            <include-form name="DropDownFieldsBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                            <include-form name="DropDownMultipleFieldBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                        </widgets>
+                                    </section>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessLookupFieldsTitle}</label></container>
+                                        <container style="screenlet-body">
+                                            <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                            <label>${uiLabelMap.BusinessDefinitionName} &quot;BusinessLookupFields&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                            <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                            <include-form name="BusinessLookupFields" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                        </container>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessGroupFields}</label></container>
+                                    <container style="screenlet-body">
+                                        <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                        <label>${uiLabelMap.BusinessDefinitionName} &quot;FieldGroupBusinessForm&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                        <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                        <container style="button-bar">
+                                            <link target="javascript:expandAll(true);"  text="${uiLabelMap.CommonExpandAll}" style="buttontext expand-all" url-mode="plain"/>
+                                            <link target="javascript:expandAll(false);" text="${uiLabelMap.CommonCollapseAll}" style="buttontext collapse-all" url-mode="plain"/>
+                                        </container>
+                                        <include-form name="FieldGroupBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                    </container>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessSelectionBoxes}</label></container>
+                                    <container style="screenlet-body">
+                                        <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                        <label>${uiLabelMap.BusinessDefinitionName} &quot;SelectionBoxesBusinessForm&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                        <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                        <include-form name="SelectionBoxesBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                    </container>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessLinks}</label></container>
+                                    <container style="screenlet-body">
+                                        <label style="h3">${uiLabelMap.BusinessSourceCode}</label>
+                                        <label>${uiLabelMap.BusinessDefinitionName} &quot;LinksBusinessForm&quot; ${uiLabelMap.BusinessDefinitionFile}</label>
+                                        <link target="${formWidgetBusinessFormsUrl}" url-mode="plain" target-window="svnPage" text="${uiLabelMap.BusinessDefinitionFileTooltip}" style="buttontext"/>
+                                        <include-form name="LinksBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                    </container>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessPrintButton}</label></container>
+                                    <container style="screenlet-body">
+                                        <label>${uiLabelMap.BusinessFopFonts}</label>
+                                    </container>
+                                    <include-form name="FOPFontsBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessMaskField}</label></container>
+                                    <container style="screenlet-body">
+                                        <label>${uiLabelMap.BusinessMaskFieldDescription}</label>
+                                    </container>
+                                    <include-form name="MaskFieldBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                </container>
+                                <container style="screenlet-body">
+                                    <container style="button-bar"><label style="h2">${uiLabelMap.BusinessDisabledFields}</label></container>
+                                    <container style="screenlet-body">
+                                        <label>${uiLabelMap.BusinessDisabledFieldDescription}</label>
+                                    </container>
+                                    <include-form name="DisabledFieldBusinessForm" location="component://business/widget/business/FormWidgetBusinessForms.xml"/>
+                                </container>
+                            </widgets>
+                            <fail-widgets>
+                                <label style="h3">${uiLabelMap.BusinessViewPermissionError}</label>
+                            </fail-widgets>
+                        </section>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    <screen name="printBusinessFOPFonts">
+        <section>
+            <widgets>
+                <platform-specific><xsl-fo><html-template location="component://business/template/reports/Fonts.fo.ftl"/></xsl-fo></platform-specific>
+            </widgets>
+        </section>
+    </screen>
+</screens>

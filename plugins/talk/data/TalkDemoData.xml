@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entity-engine-xml>
+    <TalkType talkTypeId="SOCIAL" description="Social"/>
+    <TalkType talkTypeId="SHOP" description="Shop"/>
+    <TalkType talkTypeId="ORG" description="Org"/>
+    <TalkType talkTypeId="COM" description="Com"/>
+
+<!--    <TalkFeatureApplType talkFeatureApplTypeId="REQUIRED" description="Required"/>-->
+<!--    <TalkFeatureApplType talkFeatureApplTypeId="DESIRED" description="Desired"/>-->
+<!--    <TalkFeatureApplType talkFeatureApplTypeId="NOT_ALLOWED" description="Not Allowed"/>-->
+
+    <StatusType description="Talk" statusTypeId="TALK_STATUS" hasTable="N"/>
+    <StatusItem description="사용 가능" sequenceId="01" statusCode="USE" statusId="TALK_USE" statusTypeId="TALK_STATUS"/>
+    <StatusItem description="사용 불가" sequenceId="02" statusCode="NONUSE" statusId="TALK_NONUSE" statusTypeId="TALK_STATUS"/>
+    <StatusValidChange statusId="TALK_USE" statusIdTo="TALK_NONUSE"/>
+    <StatusValidChange statusId="TALK_NONUSE" statusIdTo="TALK_USE"/>
+
+    <MediaType mediaTypeId="text" description="텍스트 톡"/>
+    <MediaType mediaTypeId="audio" description="음성 톡"/>
+    <MediaType mediaTypeId="video" description="비디오 톡"/>
+
+<!--    <PersistantType persistantTypeId="instant" description="일회성"/>-->
+<!--    <PersistantType persistantTypeId="period" description="기간"/>-->
+<!--    <PersistantType persistantTypeId="persistant" description="지속"/>-->
+
+<!--    <AccessType accessTypeId="private"/>-->
+<!--    <AccessType accessTypeId="open"/>-->
+<!--    <AccessType accessTypeId="social"/>-->
+
+<!--    <SalesType salesTypeId="free"/>-->
+<!--    <SalesType salesTypeId="charge"/>-->
+
+<!--    <ConversationType conversationTypeId="conversation"/>-->
+<!--    <ConversationType conversationTypeId="lecture"/>-->
+
+<!--    <EnumerationType description="Talk Feature Source" enumTypeId="EXMPL_FEAT_SOURCE" hasTable="N"/>-->
+<!--    <Enumeration description="Customer" enumCode="CUSTOMER" enumId="EXFTSRC_CUSTOMER" sequenceId="01" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Partner" enumCode="PARTNER" enumId="EXFTSRC_PARTNER" sequenceId="02" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+<!--    <Enumeration description="Employee" enumCode="EMPLOYEE" enumId="EXFTSRC_EMPLOYEE" sequenceId="03" enumTypeId="EXMPL_FEAT_SOURCE"/>-->
+
+<!--    <Talk talkId="socialTalk" talkName="소셜 톡" talkTypeId="SOCIAL" statusId="TALK_USE" mediaTypeId="audio" persistantTypeId="persistant" accessTypeId="private" salesTypeId="free" conversationTypeId="conversation"/>-->
+<!--    <Talk talkId="shopTalk" talkName="샵 톡" talkTypeId="SHOP" statusId="TALK_USE" mediaTypeId="audio" persistantTypeId="instant" accessTypeId="open" salesTypeId="free" conversationTypeId="conversation"/>-->
+<!--    <Talk talkId="orgTalk" talkName="기관 톡" talkTypeId="ORG" statusId="TALK_NONUSE"/>-->
+<!--    <Talk talkId="comTalk" talkName="기업 톡" talkTypeId="COM" statusId="TALK_NONUSE"/>-->
+
+</entity-engine-xml>

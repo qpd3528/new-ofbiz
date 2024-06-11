@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://ofbiz.apache.org/Widget-Menu" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+    <menu name="BusinessAppBar" title="${uiLabelMap.BusinessApplication}" extends="CommonAppBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BusinessMenuItem" title="${uiLabelMap.BusinessBusiness}">
+            <link target="FindBusiness"/>
+        </menu-item>
+        <menu-item name="BusinessFeature" title="${uiLabelMap.BusinessFeature}">
+            <link target="FindBusinessFeature"/>
+        </menu-item>
+<!--        <menu-item name="FormWidgetBusinesss" title="${uiLabelMap.BusinessFormWidgetBusinesss}">-->
+<!--            <link target="FormWidgetBusinesss"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="AjaxBusiness" title="${uiLabelMap.BusinessAjaxBusinesss}">-->
+<!--            <link target="authview/findBusinessAjax"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="portalPage" parent-portal-page-value="BUSINESS"/>-->
+<!--        <menu-item name="Dashboard" title="${uiLabelMap.BusinessDashboard}" align-style="opposed">-->
+<!--            <link target="ManagePortalPages" link-type="anchor">-->
+<!--                <parameter param-name="parentPortalPageId" value="BUSINESS"/>-->
+<!--            </link>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BusinessGeoLocation" title="${uiLabelMap.CommonGeoLocation}">-->
+<!--            <link target="BusinessGeoLocationPointSet1"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BusinessCharts" title="${uiLabelMap.BusinessChart}">-->
+<!--            <link target="BusinessBarChart"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BusinessCompleteFop" title="${uiLabelMap.ContentFopFonts}">-->
+<!--                <link target="fonts.pdf" target-window="_BLANK"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BusinessCompoundWidgets" title="${uiLabelMap.BusinessCompoundWidgets}">-->
+<!--                <link target="CompoundWidgets1"/>-->
+<!--        </menu-item>-->
+<!--        <menu-item name="BusinessReact" title="${uiLabelMap.BusinessReactBusinesss}">-->
+<!--                <link target="ReactBusiness"/>-->
+<!--        </menu-item>-->
+    </menu>
+
+    <menu name="EditBusiness" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="EditBusiness" title="${uiLabelMap.BusinessBusiness}">
+            <link target="EditBusiness">
+                <parameter param-name="businessId"/>
+            </link>
+        </menu-item>
+        <menu-item name="EditBusinessItems" title="${uiLabelMap.CommonItems}">
+            <link target="EditBusinessItems">
+                <parameter param-name="businessId"/>
+            </link>
+        </menu-item>
+        <menu-item name="EditBusinessFeatureAppls" title="${uiLabelMap.BusinessFeatures}">
+            <link target="EditBusinessFeatureAppls">
+                <parameter param-name="businessId"/>
+            </link>
+        </menu-item>
+        <!-- ================ 업체랑 비콘 연결 ================= -->
+<!--        <menu-item name="EditBusinessBeacons" title="${uiLabelMap.BusinessBeacon}">-->
+<!--            <link target="EditBusinessBeacons">-->
+<!--                <parameter param-name="businessId"/>-->
+<!--            </link>-->
+<!--        </menu-item>-->
+
+<!--        <menu-item name="EditBusinessBeacons2" title="${uiLabelMap.BusinessBeacon2}">-->
+<!--            <link target="EditBusinessBeacons2">-->
+<!--                <parameter param-name="businessId"/>-->
+<!--            </link>-->
+<!--        </menu-item>-->
+
+    </menu>
+
+    <menu name="EditBusinessFeature" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="EditBusinessFeature" title="${uiLabelMap.BusinessFeature}">
+            <link target="EditBusinessFeature"/>
+        </menu-item>
+        <menu-item name="EditBusinessFeatureBusinessAppls" title="${uiLabelMap.BusinessBusinesss}">
+            <link target="EditBusinessFeatureBusinessAppls"/>
+        </menu-item>
+    </menu>
+
+    <menu name="BusinessGeoLocation" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BusinessGeoLocationPointSet1" title="${uiLabelMap.PointSet1}"><link target="BusinessGeoLocationPointSet1"/></menu-item>
+        <menu-item name="BusinessGeoLocationPointSet2" title="${uiLabelMap.PointSet2}"><link target="BusinessGeoLocationPointSet2"/></menu-item>
+        <menu-item name="BusinessGeoLocationPointSet3" title="${uiLabelMap.PointSet3}"><link target="BusinessGeoLocationPointSet3"/></menu-item>
+        <menu-item name="BusinessGeoLocationPointSet4" title="${uiLabelMap.PointSet4}"><link target="BusinessGeoLocationPointSet4"/></menu-item>
+        <menu-item name="BusinessGeoLocationAddress" title="${uiLabelMap.BusinessPointAddress}"><link target="BusinessGeoLocationAddress"/></menu-item>
+        <!--Businesss using openstreetmap -->
+        <menu-item name="BusinessOsmGeoLocationPointSet1" title="${uiLabelMap.OsmPointSet1}"><link target="BusinessOsmGeoLocationPointSet1"/></menu-item>
+        <menu-item name="BusinessOsmGeoLocationPointSet2" title="${uiLabelMap.OsmPointSet2}"><link target="BusinessOsmGeoLocationPointSet2"/></menu-item>
+        <menu-item name="BusinessOsmGeoLocationPointSet3" title="${uiLabelMap.OsmPointSet3}"><link target="BusinessOsmGeoLocationPointSet3"/></menu-item>
+        <menu-item name="BusinessOsmGeoLocationPointSet4" title="${uiLabelMap.OsmPointSet4}"><link target="BusinessOsmGeoLocationPointSet4"/></menu-item>
+    </menu>
+
+    <menu name="BusinessCharts" extends="CommonTabBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+        <menu-item name="BusinessBarChart" title="${uiLabelMap.BusinessBarChart}"><link target="BusinessBarChart"/></menu-item>
+        <menu-item name="BusinessPieChart" title="${uiLabelMap.BusinessPieChart}"><link target="BusinessPieChart"/></menu-item>
+    </menu>
+
+</menus>
