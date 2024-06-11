@@ -115,6 +115,21 @@ public class BusinessServices {
             return ServiceUtil.returnError("Error retrieving companies: " + e.getMessage());
         }
     }
+    // getCompaniesByMajorId 메서드 흐름
+    // 해당 메서드는 'DispatchContext'와 'Map<String, ?>' 타입의 'Context'를 매개변수로 받음
+    // Delegator 객체 가져오기 : 'Delegator'객체는 Ofbiz의 데이터베이스 작업을 수행하는 핵심 클래스
+    // 'dctx.getDelegator()'메서드를 통해 'Delegator'객체를 가져옴
+    // majorId 가져오기 : 'context' 맵에서 'majorId'값을 가져옴
+    // 결과를 저장할 'HashMap'객체를 생성
+    // 'delegator.findNyAnd' 메서드를 사용하여 'majorId'값을 기준으로 'businessItems'엔티티를 조회
+    // 'UtilMisc.toMap("majorId", majorId)'는 조회 조건을 설정
+    // 조회된 'businessItems' 목록이 비어 있으면 실패 메시지를 반환
+    // 'businessItems' 목록에서 'businessId'값을 추출하여 'businesss' 엔티티를 조회
+    // 'EntityCondition.makeCondition'메서드를 사용하여 조회 조건을 설정
+    // 'EntityOperator.IN'연산자를 사용하여 여러 'businessId'값을 조건으로 설정
+    // 조회된 'business'엔티티 목록을 'result'맵에 'list'키로 저장
+    // 성공시 성공 결과를 반환
+    // 데이터베이스 작업 중 예외가 발생하면 에러 메시지를 반환
 
 
 }
